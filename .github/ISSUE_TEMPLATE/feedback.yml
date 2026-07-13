@@ -1,0 +1,24 @@
+name: Feedback or suggestion
+description: Tell us what to add, fix, or improve on RoomKaki
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What's this about?
+      options:
+        - A feature I wish existed
+        - Something is confusing or broken
+        - A safety or trust idea
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: Tell us more
+      description: What would make RoomKaki more useful or trustworthy for you?
+      placeholder: "Anything helps — in English or မြန်မာ."
+    validations:
+      required: true

@@ -93,3 +93,8 @@ border-radius:999px;width:34px;height:34px;font-size:1.1rem}
 
 footer{border-top:1px solid var(--line);padding:26px 16px;text-align:center;color:var(--mut);font-size:.85rem}
 footer b{color:var(--brand)}
+.hero .early{font-size:.9rem;color:var(--mut);margin-top:14px}
+.hero .early a{color:var(--brand);font-weight:700;text-decoration:none}
+.hero .early a:hover{text-decoration:underline}
+.feedback-link{display:inline-block;margin-top:8px;color:var(--brand);font-weight:700;text-decoration:none}
+.feedback-link:hover{text-decoration:underline}
