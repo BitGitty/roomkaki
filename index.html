@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoomKaki — find a room you can trust · Singapore</title>
+<meta name="description" content="Rooms and flatshares in Singapore from verified posters. Owner-direct, MRT-smart search, scam-safe. English · မြန်မာ and more.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <button class="lang" onclick="alert('Prototype: full Burmese UI (and Tagalog, Bahasa, 中文…) ships with the backend — every listing auto-translated.')">EN · မြန်မာ</button>
+  <button class="cta" onclick="alert('Prototype: posting flow (photos, phone verification) ships with the backend.')">Post a room</button>
+</header>
+
+<section class="hero">
+  <h1>Find a room you can <em>trust</em></h1>
+  <p>Verified posters · owner-direct rooms · MRT-smart search. Built for Singapore's communities, in your language.</p>
+  <div class="search">
+    <input id="q" type="search" placeholder="Search area or MRT station… e.g. Boon Lay">
+    <button class="cta">Search</button>
+  </div>
+</section>
+
+<div class="filters">
+  <select class="chip" data-filter="type">
+    <option value="All">All room types</option>
+    <option>Common room</option><option>Single room</option><option>Master room</option>
+  </select>
+  <select class="chip" data-filter="line">
+    <option value="All">All MRT lines</option>
+    <option value="EW">East West</option><option value="NS">North South</option>
+    <option value="NE">North East</option><option value="CC">Circle</option>
+    <option value="DT">Downtown</option><option value="TE">Thomson-East Coast</option>
+  </select>
+  <select class="chip" data-filter="gender">
+    <option value="All">Any preference</option>
+    <option>Female only</option><option>Male only</option>
+  </select>
+  <button class="chip" id="ownerOnly">Owner-direct only</button>
+  <label class="chip">Max <span id="priceLabel">≤ S$1600</span>
+    <input id="price" type="range" min="600" max="1600" step="50" value="1600" style="vertical-align:middle">
+  </label>
+</div>
+
+<div class="viewbar">
+  <span class="count" id="count"></span>
+  <div class="toggle">
+    <button data-v="grid" class="on" onclick="setView('grid')">Cards</button>
+    <button data-v="map" onclick="setView('map')">Map</button>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div id="map"></div>
+</main>
+
+<div class="panel" id="panel"><div class="sheet" id="sheet"></div></div>
+
+<footer>
+  <p><b>RoomKaki</b> — design prototype · listings shown are demo data</p>
+  <p>Safety first: never transfer money before viewing · HDB minimum-stay rules shown on every listing</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
