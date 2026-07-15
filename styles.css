@@ -121,3 +121,7 @@ background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 13px;font:i
 .ck{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;color:var(--fg);margin:0}
 .ck input{width:auto;margin:0}
 .contact a{text-decoration:none;text-align:center;display:block}
+
+/* listing photos */
+.photostrip{display:flex;gap:6px;overflow-x:auto;padding:8px 22px 0;scrollbar-width:thin}
+.photostrip img{height:96px;width:auto;border-radius:8px;object-fit:cover;flex:0 0 auto}

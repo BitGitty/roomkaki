@@ -8,6 +8,12 @@ function lineDot(l) {
   return `<span class="dot" style="background:${LINES[l].color}">${l}</span>`;
 }
 
+function phBg(r) {
+  return (r.photos && r.photos.length)
+    ? `background-image:url('${r.photos[0]}');background-size:cover;background-position:center`
+    : `background:linear-gradient(135deg,${r.grad[0]},${r.grad[1]})`;
+}
+
 function filtered() {
   return rooms.filter((r) =>
     (state.type === "All" || r.type === state.type) &&
@@ -21,7 +27,7 @@ function filtered() {
 
 function card(r) {
   return `<article class="card" onclick="openSheet(${r.id})">
-    <div class="ph" style="background:linear-gradient(135deg,${r.grad[0]},${r.grad[1]})">
+    <div class="ph" style="${phBg(r)}">
       <span class="badge ${r.owner ? "owner" : "agent"}">${r.owner ? "Owner direct" : "Agent"}</span>
       <span class="badge">${r.type}</span>
     </div>
@@ -74,7 +80,10 @@ function openSheet(id) {
   const r = rooms.find((x) => x.id === id);
   $("#sheet").innerHTML = `
     <button class="close" onclick="closeSheet()">✕</button>
-    <div class="ph" style="background:linear-gradient(135deg,${r.grad[0]},${r.grad[1]})"></div>
+    <div class="ph" style="${phBg(r)}"></div>
+    ${r.photos && r.photos.length > 1
+      ? `<div class="photostrip">${r.photos.slice(1).map((u) => `<img src="${u}" loading="lazy" alt="room photo">`).join("")}</div>`
+      : ""}
     <div class="inner">
       <div class="price">S$${r.price}<small>/month</small></div>
       <h2>${r.title}</h2>
@@ -194,6 +203,7 @@ async function openPost() {
     <label class="full">Title<input id="f_title" maxlength="80" placeholder="Bright common room, 6 min to Boon Lay MRT"></label>
     <label class="full">Description<textarea id="f_desc" rows="3" placeholder="Furnished, aircon, cooking allowed, available now…"></textarea></label>
     <label class="full">Your WhatsApp / phone<input id="f_phone" placeholder="+65 9xxx xxxx"></label>
+    <label class="full">Photos (up to 6 — first is the cover)<input id="f_photos" type="file" accept="image/*" multiple></label>
     <div class="checks">
       <label class="ck"><input id="f_owner" type="checkbox" checked> I'm the owner (not an agent)</label>
       <label class="ck"><input id="f_cook" type="checkbox" checked> Cooking OK</label>
@@ -222,6 +232,11 @@ async function submitPost() {
     aircon: ck("f_air"), couple_ok: ck("f_couple"), contact_phone: g("f_phone"),
   });
   if (res.error) { $("#postMsg").textContent = "Couldn't post: " + res.error; return; }
+  const files = $("#f_photos").files;
+  if (files && files.length) {
+    $("#postMsg").textContent = `Uploading ${Math.min(files.length, 6)} photo(s)…`;
+    await uploadPhotos(res.id, files);
+  }
   $("#modalbox").innerHTML = `<button class="close" onclick="closeModal()">✕</button>
     <h2>✓ Room submitted</h2>
     <p class="mut">Thanks! We review new listings before they go live — usually the same day.

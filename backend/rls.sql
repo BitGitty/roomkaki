@@ -73,6 +73,15 @@ with (security_invoker = false) as
   where status = 'live';
 grant select on public_listings to anon, authenticated;
 
+-- PUBLIC PHOTOS: photo rows for LIVE listings only (the file bytes are already public in the
+-- listing-photos bucket; this exposes the storage_path so the client can build the URL).
+create or replace view public_listing_photos
+with (security_invoker = false) as
+  select p.listing_id, p.storage_path, p.position
+  from listing_photos p join listings l on l.id = p.listing_id
+  where l.status = 'live';
+grant select on public_listing_photos to anon, authenticated;
+
 -- reveal_contact: security-definer RPC — logs the reveal, then returns the phone.
 create or replace function reveal_contact(p_listing_id bigint)
 returns text language plpgsql security definer set search_path = public as $$

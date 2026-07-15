@@ -33,7 +33,51 @@ async function fetchLiveListings() {
   const { data, error } = await sb.from("public_listings")
     .select("*").order("created_at", { ascending: false });
   if (error) { console.warn("listings:", error.message); return []; }
-  return data.map(mapRow);
+  const rows = data.map(mapRow);
+  const ids = rows.map((r) => r.id);
+  if (ids.length) {
+    const { data: ph } = await sb.from("public_listing_photos")
+      .select("listing_id,storage_path,position").in("listing_id", ids)
+      .order("position", { ascending: true });
+    const by = {};
+    for (const p of ph || []) (by[p.listing_id] ||= []).push(photoUrl(p.storage_path));
+    for (const r of rows) r.photos = by[r.id] || [];
+  }
+  return rows;
+}
+
+function photoUrl(path) {
+  return sb.storage.from("listing-photos").getPublicUrl(path).data.publicUrl;
+}
+
+// re-encode through a canvas: strips EXIF (privacy) + caps size (bandwidth)
+async function _downscale(file, max = 1280, quality = 0.82) {
+  try {
+    const img = await createImageBitmap(file);
+    let w = img.width, h = img.height;
+    if (Math.max(w, h) > max) { const s = max / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    c.getContext("2d").drawImage(img, 0, 0, w, h);
+    return await new Promise((res) => c.toBlob((b) => res(b || file), "image/jpeg", quality));
+  } catch { return file; }
+}
+
+async function uploadPhotos(listingId, files) {
+  const user = await currentUser();
+  if (!user) return { error: "Please sign in first." };
+  const arr = Array.from(files).slice(0, 6);
+  let n = 0;
+  for (let i = 0; i < arr.length; i++) {
+    const blob = await _downscale(arr[i]);
+    const path = `${user.id}/${listingId}/${i}.jpg`;
+    const up = await sb.storage.from("listing-photos")
+      .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
+    if (up.error) { console.warn("photo:", up.error.message); continue; }
+    await sb.from("listing_photos").insert({ listing_id: listingId, storage_path: path, position: i });
+    n++;
+  }
+  return { count: n };
 }
 
 // ---- auth (email magic link / OTP) ----
