@@ -14,7 +14,8 @@
   <a class="logo" href="#"><b>Room</b>Kaki<span>SINGAPORE</span></a>
   <div class="grow"></div>
   <button class="lang" onclick="alert('Prototype: full Burmese UI (and Tagalog, Bahasa, 中文…) ships with the backend — every listing auto-translated.')">EN · မြန်မာ</button>
-  <button class="cta" onclick="alert('Prototype: posting flow (photos, phone verification) ships with the backend.')">Post a room</button>
+  <span id="authSlot"></span>
+  <button class="cta" onclick="openPost()">Post a room</button>
 </header>
 
 <section class="hero">
@@ -64,13 +65,17 @@
 
 <div class="panel" id="panel"><div class="sheet" id="sheet"></div></div>
 
+<div class="modal" id="modal"><div class="modalbox" id="modalbox"></div></div>
+
 <footer>
-  <p><b>RoomKaki</b> — early preview · listings shown are demo data</p>
+  <p id="footNote"><b>RoomKaki</b> — early preview · listings shown are demo data</p>
   <p>Safety first: never transfer money before viewing · HDB minimum-stay rules shown on every listing</p>
   <p><a class="feedback-link" href="https://github.com/BitGitty/roomkaki/issues/new?template=feedback.yml" target="_blank" rel="noopener">💬 Suggest a feature or report a problem</a></p>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sb.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>

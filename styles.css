@@ -98,3 +98,26 @@ footer b{color:var(--brand)}
 .hero .early a:hover{text-decoration:underline}
 .feedback-link{display:inline-block;margin-top:8px;color:var(--brand);font-weight:700;text-decoration:none}
 .feedback-link:hover{text-decoration:underline}
+
+/* auth + modals */
+#authSlot{display:flex;align-items:center;gap:8px}
+.who{font-weight:600;font-size:.85rem;color:var(--mut);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal{position:fixed;inset:0;background:rgba(10,20,17,.55);display:none;z-index:120;
+align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.modal.open{display:flex}
+.modalbox{position:relative;background:var(--card);width:100%;max-width:520px;border-radius:20px;
+padding:26px 24px;box-shadow:var(--shadow)}
+@media(min-width:700px){.modal{align-items:center}}
+.modalbox h2{font-size:1.3rem;margin-bottom:4px}
+.modalbox .mut{color:var(--mut);font-size:.9rem;margin:4px 0}
+.modalbox input,.modalbox select,.modalbox textarea{width:100%;border:1.5px solid var(--line);
+background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 13px;font:inherit;margin-top:4px;outline:none}
+.modalbox input:focus,.modalbox select:focus,.modalbox textarea:focus{border-color:var(--brand)}
+.modalbox label{display:block;font-size:.82rem;font-weight:600;color:var(--mut);margin-top:12px}
+.cta.wide{width:100%;padding:13px;font-size:1rem;margin-top:18px}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.form2 label,label.full{margin-top:12px}
+.checks{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:14px}
+.ck{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;color:var(--fg);margin:0}
+.ck input{width:auto;margin:0}
+.contact a{text-decoration:none;text-align:center;display:block}
