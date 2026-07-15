@@ -117,6 +117,30 @@ async function reportListing(listingId, reason, detail) {
   const { error } = await sb.from("reports").insert({ listing_id: listingId, reason, detail });
   return error ? error.message : null;
 }
+
+// ---- a poster's own listings (any status; RLS owner-select) ----
+async function myListings() {
+  const user = await currentUser();
+  if (!user) return { error: "Please sign in first." };
+  const { data, error } = await sb.from("listings")
+    .select("*").eq("poster_id", user.id).order("created_at", { ascending: false });
+  return error ? { error: error.message } : { rows: data || [] };
+}
+async function updateListing(id, f) {
+  // edits send a live/pending listing back to review (anti-scam) — trigger keeps status honest
+  const { error } = await sb.from("listings").update({
+    room_type: f.room_type, price_month: f.price_month, title: f.title, description: f.description,
+    area: f.area, transit_line: f.transit_line, station: f.station, walk_minutes: f.walk_minutes,
+    gender_pref: f.gender_pref, is_hdb: f.is_hdb, listed_by_owner: f.listed_by_owner,
+    cooking_ok: f.cooking_ok, aircon: f.aircon, couple_ok: f.couple_ok,
+    contact_phone: f.contact_phone, status: "pending",
+  }).eq("id", id);
+  return error ? { error: error.message } : { id };
+}
+async function removeListing(id) {
+  const { error } = await sb.from("listings").update({ status: "removed" }).eq("id", id);
+  return error ? error.message : null;
+}
 async function revealContact(listingId) {
   const { data, error } = await sb.rpc("reveal_contact", { p_listing_id: listingId });
   return error ? { error: error.message } : { phone: data };

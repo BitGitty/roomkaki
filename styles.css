@@ -125,3 +125,14 @@ background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 13px;font:i
 /* listing photos */
 .photostrip{display:flex;gap:6px;overflow-x:auto;padding:8px 22px 0;scrollbar-width:thin}
 .photostrip img{height:96px;width:auto;border-radius:8px;object-fit:cover;flex:0 0 auto}
+
+/* my rooms */
+.myroom{display:flex;align-items:center;gap:10px;justify-content:space-between;
+padding:12px 0;border-bottom:1px solid var(--line)}
+.mr-main{font-size:.95rem}
+.st{display:inline-block;margin-left:8px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;vertical-align:middle}
+.st-live{background:var(--ok);color:#fff}
+.st-pending{background:var(--accent);color:#111}
+.st-removed,.st-rejected,.st-expired{background:var(--line);color:var(--mut)}
+.myacts{display:flex;gap:6px;flex:0 0 auto}
+.ghost.sm{padding:7px 12px;font-size:.85rem}

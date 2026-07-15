@@ -148,7 +148,8 @@ async function refreshAuth() {
   const user = await currentUser();
   const slot = $("#authSlot");
   if (user) {
-    slot.innerHTML = `<span class="who">${(user.email || "member").split("@")[0]}</span>
+    slot.innerHTML = `<button class="lang" onclick="openMyRooms()">My rooms</button>
+      <span class="who">${(user.email || "member").split("@")[0]}</span>
       <button class="lang" onclick="doLogout()">Log out</button>`;
   } else {
     slot.innerHTML = `<button class="lang" onclick="openLogin()">Log in</button>`;
@@ -177,11 +178,12 @@ async function submitLogin() {
     : `✓ Check <b>${email}</b> for your sign-in link, then come back to this tab.`;
 }
 
-async function openPost() {
+async function openPost(existing) {
   const user = await refreshAuth();
   if (!user) { openLogin("Log in first, then post your room."); return; }
-  openModal(`<h2>Post a room</h2>
-    <p class="mut">Free. Reviewed before it goes live — usually same day.</p>
+  const ed = (existing && existing.id) ? existing : null;
+  openModal(`<h2>${ed ? "Edit room" : "Post a room"}</h2>
+    <p class="mut">${ed ? "Edited rooms go back to review before they're live again." : "Free. Reviewed before it goes live — usually same day."}</p>
     <div class="form2">
       <label>Room type<select id="f_type">
         <option value="common">Common room</option><option value="single">Single room</option>
@@ -210,11 +212,64 @@ async function openPost() {
       <label class="ck"><input id="f_air" type="checkbox" checked> Aircon</label>
       <label class="ck"><input id="f_couple" type="checkbox"> Couple OK</label>
     </div>
-    <button class="cta wide" onclick="submitPost()">Post my room</button>
+    <button class="cta wide" onclick="submitPost(${ed ? ed.id : ""})">${ed ? "Save changes" : "Post my room"}</button>
     <div id="postMsg" class="mut"></div>`);
+  if (ed) {
+    $("#f_type").value = ed.room_type; $("#f_price").value = ed.price_month;
+    $("#f_line").value = ed.transit_line || "EW"; $("#f_station").value = ed.station || "";
+    $("#f_walk").value = ed.walk_minutes || ""; $("#f_area").value = ed.area || "";
+    $("#f_gender").value = ed.gender_pref || "any"; $("#f_hdb").value = String(!!ed.is_hdb);
+    $("#f_title").value = ed.title || ""; $("#f_desc").value = ed.description || "";
+    $("#f_phone").value = ed.contact_phone || "";
+    $("#f_owner").checked = !!ed.listed_by_owner; $("#f_cook").checked = !!ed.cooking_ok;
+    $("#f_air").checked = !!ed.aircon; $("#f_couple").checked = !!ed.couple_ok;
+  }
 }
 
-async function submitPost() {
+// ---------- my rooms (poster's own listings) ----------
+const STATUS_LABEL = { pending: "In review", live: "Live", removed: "Removed",
+                       rejected: "Rejected", paused: "Paused", expired: "Expired" };
+
+async function openMyRooms() {
+  const user = await refreshAuth();
+  if (!user) { openLogin("Log in to see your rooms."); return; }
+  openModal(`<h2>My rooms</h2><div id="myrooms" class="mut">Loading…</div>`);
+  const res = await myListings();
+  const box = $("#myrooms");
+  if (res.error) { box.textContent = res.error; return; }
+  if (!res.rows.length) {
+    box.innerHTML = `<p>You haven't posted a room yet.</p><button class="cta wide" onclick="openPost()">Post a room</button>`;
+    return;
+  }
+  window._myRooms = {};
+  box.innerHTML = res.rows.map((r) => {
+    window._myRooms[r.id] = r;
+    return `<div class="myroom">
+      <div class="mr-main"><b>${escId(r.title)}</b><br>
+        <span class="mut">S$${r.price_month}/mo · ${escId(r.station || r.area || "")}</span>
+        <span class="st st-${r.status}">${STATUS_LABEL[r.status] || r.status}</span></div>
+      <div class="myacts">
+        <button class="ghost sm" onclick="editListing(${r.id})">Edit</button>
+        ${r.status !== "removed" ? `<button class="ghost sm" onclick="removeMine(${r.id})">Remove</button>` : ""}
+      </div></div>`;
+  }).join("");
+}
+
+function editListing(id) { openPost(window._myRooms && window._myRooms[id]); }
+
+async function removeMine(id) {
+  if (!confirm("Remove this listing? It will no longer be shown.")) return;
+  const err = await removeListing(id);
+  if (err) { alert("Couldn't remove: " + err); return; }
+  openMyRooms();
+}
+
+function escId(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+async function submitPost(editId) {
   const g = (id) => $("#" + id).value.trim();
   const ck = (id) => $("#" + id).checked;
   if (!g("f_price") || !g("f_title") || !g("f_phone")) {
@@ -222,25 +277,27 @@ async function submitPost() {
     return;
   }
   if (g("f_title").length < 8) { $("#postMsg").textContent = "Title needs at least 8 characters."; return; }
-  $("#postMsg").textContent = "Posting…";
-  const res = await postListing({
+  $("#postMsg").textContent = editId ? "Saving…" : "Posting…";
+  const f = {
     room_type: $("#f_type").value, price_month: +g("f_price"), title: g("f_title"),
     description: g("f_desc") || g("f_title"), area: g("f_area") || g("f_station") || "Singapore",
     transit_line: $("#f_line").value,
     station: g("f_station"), walk_minutes: +g("f_walk") || 0, gender_pref: $("#f_gender").value,
     is_hdb: $("#f_hdb").value === "true", listed_by_owner: ck("f_owner"), cooking_ok: ck("f_cook"),
     aircon: ck("f_air"), couple_ok: ck("f_couple"), contact_phone: g("f_phone"),
-  });
-  if (res.error) { $("#postMsg").textContent = "Couldn't post: " + res.error; return; }
+  };
+  const res = editId ? await updateListing(editId, f) : await postListing(f);
+  if (res.error) { $("#postMsg").textContent = "Couldn't save: " + res.error; return; }
+  const listingId = editId || res.id;
   const files = $("#f_photos").files;
   if (files && files.length) {
     $("#postMsg").textContent = `Uploading ${Math.min(files.length, 6)} photo(s)…`;
-    await uploadPhotos(res.id, files);
+    await uploadPhotos(listingId, files);
   }
   $("#modalbox").innerHTML = `<button class="close" onclick="closeModal()">✕</button>
-    <h2>✓ Room submitted</h2>
-    <p class="mut">Thanks! We review new listings before they go live — usually the same day.
-    You'll see it in the feed once it's approved.</p>
+    <h2>✓ Room ${editId ? "updated" : "submitted"}</h2>
+    <p class="mut">Thanks! We review ${editId ? "edited" : "new"} listings before they go live —
+    usually the same day. You'll see it in the feed once it's approved.</p>
     <button class="cta wide" onclick="closeModal()">Done</button>`;
 }
 
