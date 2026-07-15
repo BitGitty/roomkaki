@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>RoomKaki — moderation</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .admin{max-width:760px;margin:0 auto;padding:20px 16px}
+  .admin h1{font-size:1.4rem;margin-bottom:4px}
+  .admin .sub{color:var(--mut);margin-bottom:18px}
+  .pend{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px}
+  .pend h3{font-size:1.05rem;margin:0 0 2px}
+  .pend .row{color:var(--mut);font-size:.9rem;margin:2px 0}
+  .pend .desc{margin:8px 0;font-size:.92rem}
+  .pend .acts{display:flex;gap:10px;margin-top:10px}
+  .pend .acts button{flex:1;padding:11px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+  .approve{background:var(--ok);color:#fff}
+  .reject{background:none;border:1.5px solid var(--no)!important;color:var(--no)}
+  #msg{color:var(--mut);margin:10px 0}
+  .empty{color:var(--mut);text-align:center;padding:40px}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="./"><b>Room</b>Kaki<span>MODERATION</span></a>
+  <div class="grow"></div>
+  <span id="who"></span>
+</header>
+<main class="admin">
+  <h1>Pending listings</h1>
+  <p class="sub">Approve a room to publish it live, or reject it. Every action is logged.</p>
+  <div id="msg"></div>
+  <div id="list"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sb.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

@@ -121,3 +121,13 @@ async function revealContact(listingId) {
   const { data, error } = await sb.rpc("reveal_contact", { p_listing_id: listingId });
   return error ? { error: error.message } : { phone: data };
 }
+
+// ---- admin moderation (owner only; enforced server-side by admin_is()) ----
+async function adminPending() {
+  const { data, error } = await sb.rpc("admin_pending");
+  return error ? { error: error.message } : { rows: data || [] };
+}
+async function adminModerate(listingId, status) {
+  const { data, error } = await sb.rpc("admin_moderate", { p_listing_id: listingId, p_status: status });
+  return error ? { error: error.message } : { status: data };
+}

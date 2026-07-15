@@ -31,6 +31,11 @@ for host in HOSTS:
         with conn.cursor() as cur:
             cur.execute(sql)
             print(f"OK via {host}  (statusmessage: {cur.statusmessage})")
+            if cur.description:  # a SELECT — show the rows
+                cols = [d[0] for d in cur.description]
+                print(" | ".join(cols))
+                for row in cur.fetchall():
+                    print(" | ".join("" if v is None else str(v) for v in row))
         conn.close()
         sys.exit(0)
     except Exception as e:

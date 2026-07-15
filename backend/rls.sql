@@ -47,10 +47,12 @@ create policy p_reveal_ins on contact_reveals for insert to authenticated with c
 -- (their insert/update policy is row-scoped, not column-scoped). This trigger makes
 -- 'live' reachable ONLY by an admin (service_role / dashboard). End users may create,
 -- edit, pause and remove their own listings, but never self-approve to public.
+alter table profiles add column if not exists is_admin boolean not null default false;
 create or replace function enforce_listing_moderation()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  if auth.role() is distinct from 'authenticated' then return new; end if;  -- admin/service bypass
+  if auth.role() is distinct from 'authenticated' then return new; end if;  -- service bypass
+  if coalesce((select is_admin from profiles where id = auth.uid()), false) then return new; end if;  -- admin bypass
   if tg_op = 'INSERT' then
     new.status := 'pending';                       -- nothing enters public on creation
   elsif tg_op = 'UPDATE' and new.status = 'live' and old.status is distinct from 'live' then
