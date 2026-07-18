@@ -1,0 +1,20 @@
+# RoomKaki
+
+> Trust-first room and flatshare rentals in Singapore. Owner-direct listings from verified posters, MRT-smart search, and a scam-safe contact-reveal flow. Serves English, Burmese (မြန်မာ), and more.
+
+RoomKaki is a Singapore-focused platform for finding and posting rooms and flatshares **directly with owners** — no agent fees. Every poster is verified, contact details are revealed through a logged, scam-safe flow, and search is organised around MRT lines and neighbourhoods. It is built for renters who have been burned by scams or opaque agents, including migrant and student communities.
+
+## Key facts
+- Location served: Singapore
+- Model: owner-direct (no middleman agent), trust-first, verified posters
+- Search: by MRT line, price, room type, move-in date
+- Languages: English, Burmese (မြန်မာ), more coming
+- Cost: free to browse, free to post
+- Safety: contact reveal is logged; listings are moderated before going live
+
+## Main pages
+- [Home / search](https://roomkaki.com/): browse and search verified listings on a map
+- [Post a room](https://roomkaki.com/): owners list a room (login required)
+
+## Contact
+Feedback and suggestions are welcome via the on-site "tell us what to add" form.
