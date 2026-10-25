@@ -33,3 +33,8 @@ __pycache__/
 venv/
 node_modules/
 .pytest_cache/
+
+# local AI-tool config: never publish (carries private operator notes)
+AGENTS.md
+.cursor/
+.github/copilot-instructions.md
