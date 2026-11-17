@@ -1,6 +1,8 @@
 let state = { type: "All", line: "All", gender: "All", ownerOnly: false, maxPrice: 1600, q: "", view: "grid" };
 let map, markers = [];
-let rooms = (typeof LISTINGS !== "undefined") ? LISTINGS.slice() : [];  // demo until live data arrives
+// Demo rooms only for design review (?demo=1) — the live site never shows fake listings.
+const DEMO = new URLSearchParams(location.search).has("demo");
+let rooms = (DEMO && typeof LISTINGS !== "undefined") ? LISTINGS.slice() : [];
 
 const $ = (s) => document.querySelector(s);
 
@@ -50,8 +52,14 @@ function card(r) {
 function render() {
   const list = filtered();
   $("#count").textContent = `${list.length} rooms`;
-  $("#grid").innerHTML = list.map(card).join("") ||
-    '<p style="grid-column:1/-1;text-align:center;color:var(--mut);padding:40px">No rooms match — try widening the filters.</p>';
+  $("#grid").innerHTML = list.map(card).join("") || (rooms.length === 0
+    ? `<div style="grid-column:1/-1;text-align:center;padding:48px 20px">
+        <h3 style="margin:0 0 8px">We just opened — no rooms yet</h3>
+        <p style="color:var(--mut);margin:0 0 6px">Have a room to rent out? Post it free and be one of our founding listings.</p>
+        <p style="color:var(--mut);margin:0 0 18px">အခန်းငှားစရာရှိပါသလား? အခမဲ့တင်နိုင်ပါပြီ — ပထမဆုံးတင်သူများထဲက တစ်ယောက်ဖြစ်လိုက်ပါ။</p>
+        <button class="cta" onclick="openPost()">Post a room — free</button>
+      </div>`
+    : '<p style="grid-column:1/-1;text-align:center;color:var(--mut);padding:40px">No rooms match — try widening the filters.</p>');
   if (state.view === "map") renderMap(list);
 }
 
