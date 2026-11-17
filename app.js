@@ -334,7 +334,7 @@ async function sendFeedback() {
     const r = await fetch(SB_URL + "/rest/v1/rpc/submit_suggestion", {
       method: "POST",
       headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json" },
-      body: JSON.stringify({ p_site: "roomkaki", p_kind: "feedback", p_message: msg,
+      body: JSON.stringify({ p_site: "roomkaki", p_kind: "idea", p_message: msg,
         p_email: $("#fbContact").value.trim() || null, p_page: location.pathname, p_hp: $("#fbHp").value || null }),
     });
     const out = await r.json();
