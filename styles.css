@@ -7,7 +7,7 @@
   --bg:#0e1513;--fg:#e8efec;--mut:#93a49e;--card:#16201d;--line:#243430;
   --shadow:0 1px 3px rgba(0,0,0,.4)}}
 *{box-sizing:border-box;margin:0}
-body{background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,'Segoe UI',Roboto,sans-serif}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,'Segoe UI',Roboto,'Myanmar Text','Padauk','Noto Sans Myanmar',sans-serif}
 button{font:inherit;cursor:pointer}
 a{color:inherit}
 
@@ -17,9 +17,17 @@ display:flex;align-items:center;gap:14px;padding:10px 18px}
 .logo b{color:var(--brand)}
 .logo span{font-size:.68rem;display:block;font-weight:600;color:var(--mut);letter-spacing:.06em}
 header .grow{flex:1}
-.lang{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;color:var(--fg)}
-.cta{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:9px 18px;font-weight:700}
+.lang{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;color:var(--fg);white-space:nowrap}
+.cta{background:var(--brand);color:#fff;border:0;border-radius:999px;padding:9px 18px;font-weight:700;white-space:nowrap}
 .cta:hover{background:var(--brand-dark)}
+@media(max-width:480px){
+  header{gap:8px;padding:8px 10px}
+  .logo{font-size:1.1rem}
+  .logo span{display:none}
+  .lang{padding:5px 10px;font-size:.82rem}
+  header .cta{padding:8px 12px;font-size:.85rem}
+  .who{display:none}
+}
 
 .hero{text-align:center;padding:34px 16px 10px}
 .hero h1{font-size:clamp(1.5rem,4.5vw,2.3rem);line-height:1.2}
@@ -73,7 +81,7 @@ font-size:.75rem;color:var(--mut)}
 align-items:flex-end;justify-content:center}
 .panel.open{display:flex}
 .sheet{background:var(--card);width:100%;max-width:660px;max-height:88vh;overflow-y:auto;
-border-radius:20px 20px 0 0;padding:0 0 30px}
+border-radius:20px 20px 0 0;padding:0 0 30px;position:relative}
 @media(min-width:700px){.panel{align-items:center}.sheet{border-radius:20px}}
 .sheet .ph{height:210px;border-radius:20px 20px 0 0}
 .sheet .inner{padding:18px 22px}
@@ -85,7 +93,8 @@ padding:10px 14px;font-size:.85rem;margin:14px 0}
 .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:14px 0}
 .facts div{font-size:.9rem}
 .facts b{display:block;font-size:.75rem;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.contact{display:flex;gap:10px;margin-top:16px}
+.contact{display:flex;gap:10px;margin-top:16px;position:sticky;bottom:0;background:var(--card);
+padding:10px 0;flex-wrap:wrap}
 .contact .cta{flex:1;padding:13px;font-size:1rem}
 .ghost{background:none;border:1.5px solid var(--line);border-radius:999px;padding:13px 18px;color:var(--mut)}
 .close{position:absolute;margin:12px;background:rgba(0,0,0,.5);color:#fff;border:0;

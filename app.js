@@ -1,10 +1,48 @@
-let state = { type: "All", line: "All", gender: "All", ownerOnly: false, maxPrice: 1600, q: "", view: "grid" };
+let state = { type: "All", line: "All", gender: "All", ownerOnly: false, maxPrice: 3000, q: "", view: "grid" };
 let map, markers = [];
 // Demo rooms only for design review (?demo=1) — the live site never shows fake listings.
 const DEMO = new URLSearchParams(location.search).has("demo");
 let rooms = (DEMO && typeof LISTINGS !== "undefined") ? LISTINGS.slice() : [];
 
 const $ = (s) => document.querySelector(s);
+
+// ---------- i18n (EN / Burmese) ----------
+const I18N = {
+  heroTitle: { en: "Find a room you can <em>trust</em>", my: "ယုံကြည်လို့ရတဲ့ <em>အခန်း</em> ရှာပါ" },
+  heroSub: {
+    en: "Moderated listings · owner-direct rooms · MRT-smart search. Built for Singapore's communities, in your language.",
+    my: "စိစစ်ပြီးမှတင်သော ကြော်ငြာများ · ပိုင်ရှင်တိုက်ရိုက် အခန်းများ · MRT ဖြင့်ရှာဖွေမှု။ စင်ကာပူရှိ မိမိအသိုင်းအဝိုင်းအတွက် တည်ဆောက်ထားသည်။",
+  },
+  searchBtn: { en: "Search", my: "ရှာမယ်" },
+  postRoom: { en: "Post a room", my: "အခန်းတင်မယ်" },
+  cards: { en: "Cards", my: "ကတ်များ" },
+  mapBtn: { en: "Map", my: "မြေပုံ" },
+  safetyFoot: {
+    en: "Safety first: never transfer money before viewing · HDB minimum-stay rules shown on every listing",
+    my: "ဘေးကင်းရေးအရင် — အခန်းကို ကိုယ်တိုင်မကြည့်ရသေးခင် ငွေမလွှဲပါနှင့် · HDB အနည်းဆုံးနေထိုင်ရမည့်ကာလကို ကြော်ငြာတိုင်းတွင် ဖော်ပြထားသည်",
+  },
+  searchPh: { en: "Search area or MRT station… e.g. Boon Lay", my: "နေရာ သို့မဟုတ် MRT ဘူတာ ရှာပါ… ဥပမာ Boon Lay" },
+};
+let lang = "en";
+try { lang = localStorage.getItem("rk_lang") === "my" ? "my" : "en"; } catch (e) {}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const t = I18N[el.dataset.i18n];
+    if (t) el.innerHTML = t[lang];
+  });
+  const q = $("#q");
+  if (q) q.placeholder = I18N.searchPh[lang];
+  const btn = $("#langBtn");
+  if (btn) btn.textContent = lang === "en" ? "မြန်မာ" : "English";
+}
+
+function toggleLang() {
+  lang = lang === "en" ? "my" : "en";
+  try { localStorage.setItem("rk_lang", lang); } catch (e) {}
+  applyLang();
+}
 
 function lineDot(l) {
   return `<span class="dot" style="background:${LINES[l].color}">${l}</span>`;
@@ -22,30 +60,31 @@ function filtered() {
     (state.line === "All" || r.line === state.line) &&
     (state.gender === "All" || r.gender === state.gender || r.gender === "Any") &&
     (!state.ownerOnly || r.owner) &&
-    r.price <= state.maxPrice &&
+    (state.maxPrice >= 3000 || r.price <= state.maxPrice) &&
     (state.q === "" || (r.title + r.area + r.station).toLowerCase().includes(state.q.toLowerCase()))
   );
 }
 
 function card(r) {
-  return `<article class="card" onclick="openSheet(${r.id})">
+  return `<article class="card" tabindex="0" role="button" aria-label="${escId(r.title)}"
+    onclick="openSheet(${r.id})" onkeydown="if(event.key==='Enter')openSheet(${r.id})">
     <div class="ph" style="${phBg(r)}">
-      <span class="badge ${r.owner ? "owner" : "agent"}">${r.owner ? "Owner direct" : "Agent"}</span>
-      <span class="badge">${r.type}</span>
+      <span class="badge ${r.src ? "" : r.owner ? "owner" : "agent"}">${r.src ? "Found" : r.owner ? "Owner direct" : "Agent"}</span>
+      <span class="badge">${escId(r.type)}</span>
     </div>
     <div class="body">
-      <div class="price">S$${r.price}<small>/month</small></div>
-      <h3>${r.title}</h3>
-      <div class="mrt">${lineDot(r.line)} ${r.station} · ${r.walk} min walk</div>
+      <div class="price">S$${+r.price || 0}<small>/month</small></div>
+      <h3>${escId(r.title)}</h3>
+      <div class="mrt">${lineDot(r.line)} ${escId(r.station)} · ${+r.walk || 0} min walk</div>
       <div class="tags">
         ${r.verified ? '<span class="tag v">✓ Verified poster</span>' : ""}
         ${r.src ? '<span class="tag">Found listing</span>' : ""}
-        <span class="tag">${r.gender}</span>
+        <span class="tag">${escId(r.gender)}</span>
         ${r.cooking ? '<span class="tag">Cooking OK</span>' : ""}
         ${r.aircon ? '<span class="tag">Aircon</span>' : ""}
         ${r.couple ? '<span class="tag">Couple OK</span>' : ""}
       </div>
-      <div class="meta">${r.days === 0 ? "Posted today" : `Posted ${r.days}d ago`} · ${r.area}</div>
+      <div class="meta">${r.src ? `Found ${r.days}d ago` : r.days === 0 ? "Posted today" : `Posted ${r.days}d ago`} · ${escId(r.area)}</div>
     </div>
   </article>`;
 }
@@ -71,10 +110,12 @@ function renderMap(list) {
       { attribution: "© OpenStreetMap" }).addTo(map);
   }
   markers.forEach((m) => m.remove());
-  markers = list.filter((r) => r.lat != null && r.lng != null).map((r) =>
+  const pts = list.filter((r) => r.lat != null && r.lng != null);
+  markers = pts.map((r) =>
     L.marker([r.lat, r.lng]).addTo(map)
-      .bindPopup(`<b>S$${r.price}</b> · ${r.type}<br>${r.station} ${r.walk}min<br>
+      .bindPopup(`<b>S$${+r.price || 0}</b> · ${escId(r.type)}<br>${escId(r.station)} ${+r.walk || 0}min<br>
         <a href="#" onclick="openSheet(${r.id});return false">View room →</a>`));
+  if (pts.length) map.fitBounds(pts.map((r) => [r.lat, r.lng]), { padding: [40, 40], maxZoom: 14 });
 }
 
 function setView(v) {
@@ -85,42 +126,57 @@ function setView(v) {
   if (v === "map") { render(); setTimeout(() => map.invalidateSize(), 60); }
 }
 
+function safeUrl(u) {
+  return /^https:\/\/[^"'<>\s]+$/.test(String(u || "")) ? u : "";
+}
+
 function openSheet(id) {
   const r = rooms.find((x) => x.id === id);
+  if (!r) return;
+  track(`/ev/open/${id}`);
+  try { history.replaceState(null, "", `#room-${id}`); } catch (e) {}
   $("#sheet").innerHTML = `
-    <button class="close" onclick="closeSheet()">✕</button>
+    <button class="close" onclick="closeSheet()" aria-label="Close">✕</button>
     <div class="ph" style="${phBg(r)}"></div>
     ${r.photos && r.photos.length > 1
       ? `<div class="photostrip">${r.photos.slice(1).map((u) => `<img src="${u}" loading="lazy" alt="room photo">`).join("")}</div>`
       : ""}
     <div class="inner">
-      <div class="price">S$${r.price}<small>/month</small></div>
-      <h2>${r.title}</h2>
-      <div class="my">${r.my}</div>
-      <div class="mrt">${lineDot(r.line)} ${LINES[r.line].name} line · ${r.station} · ${r.walk} min walk</div>
+      <div class="price">S$${+r.price || 0}<small>/month</small></div>
+      <h2>${escId(r.title)}</h2>
+      <div class="my">${escId(r.my)}</div>
+      <div class="mrt">${lineDot(r.line)} ${LINES[r.line].name} line · ${escId(r.station)} · ${+r.walk || 0} min walk</div>
       <div class="safety">🛡️ <b>Stay safe:</b> never transfer a deposit before viewing the room in person.
         ${r.hdb ? `HDB rules: minimum ${r.minStay}-month stay applies.` : `Condo listing — minimum ${r.minStay} months.`}</div>
-      <p>${r.desc}</p>
+      <p>${escId(r.desc)}</p>
       <div class="facts">
-        <div><b>Room type</b>${r.type}</div>
-        <div><b>Preference</b>${r.gender}${r.couple ? " · couples OK" : ""}</div>
+        <div><b>Room type</b>${escId(r.type)}</div>
+        <div><b>Preference</b>${escId(r.gender)}${r.couple ? " · couples OK" : ""}</div>
         <div><b>Cooking</b>${r.cooking ? "Allowed" : "Not allowed"}</div>
         <div><b>Comfort</b>${[r.aircon ? "Aircon" : "Fan", r.wifi ? "WiFi" : null].filter(Boolean).join(" · ")}</div>
-        <div><b>Listed by</b>${r.owner ? "Owner (no commission)" : "Agent"}</div>
+        <div><b>Listed by</b>${r.src ? "Found listing" : r.owner ? "Owner (no commission)" : "Agent"}</div>
         <div><b>Poster</b>${r.src ? "Found on a public post — not yet verified" : (r.verified ? "✓ Phone-verified" : "Unverified")}</div>
       </div>
       <div class="contact" id="contactBox">
         ${r.src
-          ? `<a class="cta" href="${r.src}" target="_blank" rel="noopener">View original post ↗</a>
+          ? `<a class="cta" href="${safeUrl(r.src)}" target="_blank" rel="noopener" onclick="track('/ev/out/${r.id}')">View original post ↗</a>
              <button class="ghost" onclick="doReport(${r.id})">Report</button>`
           : r._real
           ? `<button class="cta" onclick="doReveal(${r.id})">Show contact</button>
              <button class="ghost" onclick="doReport(${r.id})">Report</button>`
           : `<button class="cta" onclick="alert('Demo listing — real contact reveal works on live posts.')">Show contact</button>
              <button class="ghost" onclick="alert('Demo listing — reporting works on live posts.')">Report</button>`}
+        <button class="ghost" onclick="shareRoom(${r.id})" aria-label="Share">Share</button>
       </div>
     </div>`;
   $("#panel").classList.add("open");
+}
+
+function shareRoom(id) {
+  const url = `https://roomkaki.com/#room-${id}`;
+  const r = rooms.find((x) => x.id === id);
+  if (navigator.share) { navigator.share({ title: r ? r.title : "RoomKaki", url }).catch(() => {}); return; }
+  navigator.clipboard.writeText(url).then(() => alert("Link copied — share it anywhere."), () => prompt("Copy this link:", url));
 }
 
 async function doReveal(id) {
@@ -128,11 +184,11 @@ async function doReveal(id) {
   const box = $("#contactBox");
   box.innerHTML = "<span class='mut'>Revealing…</span>";
   const res = await revealContact(id);
-  if (res.error) { box.innerHTML = `<span class='mut'>Couldn't reveal: ${res.error}</span>`; return; }
-  const phone = res.phone;
-  const wa = (phone || "").replace(/[^0-9]/g, "");
-  box.innerHTML = `<a class="cta" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp ${phone}</a>
-    <a class="ghost" href="tel:${phone}">Call ${phone}</a>`;
+  if (res.error) { box.innerHTML = `<span class='mut'>Couldn't reveal: ${escId(res.error)}</span>`; return; }
+  const phone = String(res.phone || "").replace(/[^0-9+ ]/g, "").slice(0, 20);
+  const wa = phone.replace(/[^0-9]/g, "");
+  box.innerHTML = `<a class="cta" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp ${escId(phone)}</a>
+    <a class="ghost" href="tel:${phone.replace(/ /g, "")}">Call ${escId(phone)}</a>`;
 }
 
 const REPORT_REASONS = ["scam", "fake_photos", "already_rented", "wrong_info", "abusive", "other"];
@@ -146,7 +202,22 @@ async function doReport(id) {
   const err = await reportListing(id, reason, detail);
   alert(err ? "Couldn't send report: " + err : "Thanks — our team will review it within 48 hours.");
 }
-function closeSheet() { $("#panel").classList.remove("open"); }
+function closeSheet() {
+  $("#panel").classList.remove("open");
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+}
+
+// lightweight event beacon (same RPC as pageviews; pseudo-paths /ev/open/<id>, /ev/out/<id>)
+function track(path) {
+  try {
+    fetch(SB_URL + "/rest/v1/rpc/track_view", {
+      method: "POST",
+      headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_site: "roomkaki", p_path: path, p_ref: null }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch (e) {}
+}
 
 // ---------- modals (login + post a room) ----------
 function closeModal() { $("#modal").classList.remove("open"); }
@@ -186,8 +257,8 @@ async function submitLogin() {
   $("#loginMsg").textContent = "Sending…";
   const err = await sendLogin(email);
   $("#loginMsg").innerHTML = err
-    ? `Couldn't send: ${err}`
-    : `✓ Check <b>${email}</b> for your sign-in link, then come back to this tab.`;
+    ? `Couldn't send: ${escId(err)}`
+    : `✓ Check <b>${escId(email)}</b> for your sign-in link, then come back to this tab.`;
 }
 
 async function openPost(existing) {
@@ -224,7 +295,7 @@ async function openPost(existing) {
       <label class="ck"><input id="f_air" type="checkbox" checked> Aircon</label>
       <label class="ck"><input id="f_couple" type="checkbox"> Couple OK</label>
     </div>
-    <button class="cta wide" onclick="submitPost(${ed ? ed.id : ""})">${ed ? "Save changes" : "Post my room"}</button>
+    <button class="cta wide" id="postBtn" onclick="submitPost(${ed ? ed.id : ""})">${ed ? "Save changes" : "Post my room"}</button>
     <div id="postMsg" class="mut"></div>`);
   if (ed) {
     $("#f_type").value = ed.room_type; $("#f_price").value = ed.price_month;
@@ -289,6 +360,8 @@ async function submitPost(editId) {
     return;
   }
   if (g("f_title").length < 8) { $("#postMsg").textContent = "Title needs at least 8 characters."; return; }
+  const btn = $("#postBtn");
+  if (btn) { if (btn.disabled) return; btn.disabled = true; }   // double-submit guard (crucible C16)
   $("#postMsg").textContent = editId ? "Saving…" : "Posting…";
   const f = {
     room_type: $("#f_type").value, price_month: +g("f_price"), title: g("f_title"),
@@ -299,7 +372,7 @@ async function submitPost(editId) {
     aircon: ck("f_air"), couple_ok: ck("f_couple"), contact_phone: g("f_phone"),
   };
   const res = editId ? await updateListing(editId, f) : await postListing(f);
-  if (res.error) { $("#postMsg").textContent = "Couldn't save: " + res.error; return; }
+  if (res.error) { $("#postMsg").textContent = "Couldn't save: " + res.error; if (btn) btn.disabled = false; return; }
   const listingId = editId || res.id;
   const files = $("#f_photos").files;
   if (files && files.length) {
@@ -316,19 +389,31 @@ async function submitPost(editId) {
 // ---------- live data ----------
 async function loadLive() {
   const live = await fetchLiveListings();
+  if (live === null) {
+    // backend error ≠ empty marketplace — say so and offer retry (crucible C10)
+    $("#grid").innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px">
+      <p style="color:var(--mut);margin:0 0 14px">Couldn't load listings — please check your connection.</p>
+      <button class="cta" onclick="loadLive()">Try again</button></div>`;
+    return;
+  }
   if (live.length) {
     rooms = live;
     $("#footNote").innerHTML = `<b>RoomKaki</b> — ${live.length} live listing${live.length > 1 ? "s" : ""} from our community`;
     render();
   }
+  const m = location.hash.match(/^#room-(\d+)$/);
+  if (m && rooms.some((r) => r.id === +m[1])) openSheet(+m[1]);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   $("#q").addEventListener("input", (e) => { state.q = e.target.value; render(); });
   $("#price").addEventListener("input", (e) => {
     state.maxPrice = +e.target.value;
-    $("#priceLabel").textContent = `≤ S$${e.target.value}`;
+    $("#priceLabel").textContent = state.maxPrice >= 3000 ? "Any price" : `≤ S$${e.target.value}`;
     render();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeSheet(); closeModal(); }
   });
   document.querySelectorAll("[data-filter]").forEach((el) =>
     el.addEventListener("change", () => { state[el.dataset.filter] = el.value; render(); }));
@@ -339,6 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   $("#panel").addEventListener("click", (e) => { if (e.target.id === "panel") closeSheet(); });
   $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
+  applyLang();
   render();
   refreshAuth();
   loadLive();

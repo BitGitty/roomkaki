@@ -4,20 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RoomKaki — find a room you can trust · Singapore</title>
-<meta name="description" content="Rooms and flatshares in Singapore from verified posters. Owner-direct, MRT-smart search, scam-safe. English · မြန်မာ and more. Tell us what to build — feedback welcome.">
+<meta name="description" content="Rooms and flatshares in Singapore, moderated before they go live. Owner-direct, MRT-smart search, scam-safe. English · မြန်မာ. Tell us what to build — feedback welcome.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="styles.css">
 <link rel="canonical" href="https://roomkaki.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RoomKaki">
 <meta property="og:title" content="RoomKaki — trusted rooms & flatshares in Singapore">
-<meta property="og:description" content="Owner-direct room and flatshare listings from verified posters. MRT-smart search, scam-safe. Singapore. English · မြန်မာ.">
+<meta property="og:description" content="Owner-direct room and flatshare listings, moderated before they go live. MRT-smart search, scam-safe. Singapore. English · မြန်မာ.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+<meta name="twitter:image" content="https://roomkaki.com/og.png">
 <meta property="og:url" content="https://roomkaki.com/">
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"Organization","@id":"https://roomkaki.com/#org","name":"RoomKaki","url":"https://roomkaki.com/","description":"Trust-first room and flatshare rentals in Singapore — owner-direct, verified posters, scam-safe contact reveal.","areaServed":{"@type":"Country","name":"Singapore"},"knowsLanguage":["en","my"]},
-{"@type":"WebSite","@id":"https://roomkaki.com/#site","url":"https://roomkaki.com/","name":"RoomKaki","description":"Find a room you can trust in Singapore. Owner-direct listings from verified posters, MRT-smart search, scam-safe.","inLanguage":["en","my"],"publisher":{"@id":"https://roomkaki.com/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://roomkaki.com/?q={search_term_string}"},"query-input":"required name=search_term_string"}}
+{"@type":"Organization","@id":"https://roomkaki.com/#org","name":"RoomKaki","url":"https://roomkaki.com/","description":"Trust-first room and flatshare rentals in Singapore — owner-direct, moderated before going live, scam-safe contact reveal.","areaServed":{"@type":"Country","name":"Singapore"},"knowsLanguage":["en","my"]},
+{"@type":"WebSite","@id":"https://roomkaki.com/#site","url":"https://roomkaki.com/","name":"RoomKaki","description":"Find a room you can trust in Singapore. Owner-direct listings, moderated before they go live, MRT-smart search, scam-safe.","inLanguage":["en","my"],"publisher":{"@id":"https://roomkaki.com/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://roomkaki.com/?q={search_term_string}"},"query-input":"required name=search_term_string"}}
 ]}
 </script>
 </head>
@@ -26,17 +29,17 @@
 <header>
   <a class="logo" href="#"><b>Room</b>Kaki<span>SINGAPORE</span></a>
   <div class="grow"></div>
-  <button class="lang" onclick="alert('Prototype: full Burmese UI (and Tagalog, Bahasa, 中文…) ships with the backend — every listing auto-translated.')">EN · မြန်မာ</button>
+  <button class="lang" id="langBtn" onclick="toggleLang()">မြန်မာ</button>
   <span id="authSlot"></span>
-  <button class="cta" onclick="openPost()">Post a room</button>
+  <button class="cta" data-i18n="postRoom" onclick="openPost()">Post a room</button>
 </header>
 
 <section class="hero">
-  <h1>Find a room you can <em>trust</em></h1>
-  <p>Verified posters · owner-direct rooms · MRT-smart search. Built for Singapore's communities, in your language.</p>
+  <h1 data-i18n="heroTitle">Find a room you can <em>trust</em></h1>
+  <p data-i18n="heroSub">Moderated listings · owner-direct rooms · MRT-smart search. Built for Singapore's communities, in your language.</p>
   <div class="search">
-    <input id="q" type="search" placeholder="Search area or MRT station… e.g. Boon Lay">
-    <button class="cta">Search</button>
+    <input id="q" type="search" placeholder="Search area or MRT station… e.g. Boon Lay" aria-label="Search">
+    <button class="cta" data-i18n="searchBtn">Search</button>
   </div>
   <p class="early"><b>We're building this for our community.</b> This is an early preview —
   <a href="https://github.com/BitGitty/roomkaki/issues/new?template=feedback.yml" target="_blank" rel="noopener">tell us what to add or fix →</a></p>
@@ -58,16 +61,16 @@
     <option>Female only</option><option>Male only</option>
   </select>
   <button class="chip" id="ownerOnly">Owner-direct only</button>
-  <label class="chip">Max <span id="priceLabel">≤ S$1600</span>
-    <input id="price" type="range" min="600" max="1600" step="50" value="1600" style="vertical-align:middle">
+  <label class="chip">Max <span id="priceLabel">Any price</span>
+    <input id="price" type="range" min="600" max="3000" step="50" value="3000" aria-label="Maximum monthly rent" style="vertical-align:middle">
   </label>
 </div>
 
 <div class="viewbar">
   <span class="count" id="count"></span>
   <div class="toggle">
-    <button data-v="grid" class="on" onclick="setView('grid')">Cards</button>
-    <button data-v="map" onclick="setView('map')">Map</button>
+    <button data-v="grid" class="on" data-i18n="cards" onclick="setView('grid')">Cards</button>
+    <button data-v="map" data-i18n="mapBtn" onclick="setView('map')">Map</button>
   </div>
 </div>
 
@@ -81,8 +84,8 @@
 <div class="modal" id="modal"><div class="modalbox" id="modalbox"></div></div>
 
 <footer>
-  <p id="footNote"><b>RoomKaki</b> — early preview · listings shown are demo data</p>
-  <p>Safety first: never transfer money before viewing · HDB minimum-stay rules shown on every listing</p>
+  <p id="footNote"><b>RoomKaki</b> — early preview, growing with the community</p>
+  <p data-i18n="safetyFoot">Safety first: never transfer money before viewing · HDB minimum-stay rules shown on every listing</p>
   <p><a class="feedback-link" href="https://github.com/BitGitty/roomkaki/issues/new?template=feedback.yml" target="_blank" rel="noopener">💬 Suggest a feature or report a problem</a></p>
 </footer>
 
@@ -91,6 +94,6 @@
 <script src="sb.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
-<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
 </body>
 </html>

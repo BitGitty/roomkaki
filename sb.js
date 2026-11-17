@@ -32,7 +32,7 @@ function mapRow(r) {
 async function fetchLiveListings() {
   const { data, error } = await sb.from("public_listings")
     .select("*").order("created_at", { ascending: false });
-  if (error) { console.warn("listings:", error.message); return []; }
+  if (error) { console.warn("listings:", error.message); return null; }
   const rows = data.map(mapRow);
   const ids = rows.map((r) => r.id);
   if (ids.length) {
