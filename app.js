@@ -71,7 +71,7 @@ function renderMap(list) {
       { attribution: "© OpenStreetMap" }).addTo(map);
   }
   markers.forEach((m) => m.remove());
-  markers = list.map((r) =>
+  markers = list.filter((r) => r.lat != null && r.lng != null).map((r) =>
     L.marker([r.lat, r.lng]).addTo(map)
       .bindPopup(`<b>S$${r.price}</b> · ${r.type}<br>${r.station} ${r.walk}min<br>
         <a href="#" onclick="openSheet(${r.id});return false">View room →</a>`));
