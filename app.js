@@ -39,6 +39,7 @@ function card(r) {
       <div class="mrt">${lineDot(r.line)} ${r.station} · ${r.walk} min walk</div>
       <div class="tags">
         ${r.verified ? '<span class="tag v">✓ Verified poster</span>' : ""}
+        ${r.src ? '<span class="tag">Found listing</span>' : ""}
         <span class="tag">${r.gender}</span>
         ${r.cooking ? '<span class="tag">Cooking OK</span>' : ""}
         ${r.aircon ? '<span class="tag">Aircon</span>' : ""}
@@ -106,10 +107,13 @@ function openSheet(id) {
         <div><b>Cooking</b>${r.cooking ? "Allowed" : "Not allowed"}</div>
         <div><b>Comfort</b>${[r.aircon ? "Aircon" : "Fan", r.wifi ? "WiFi" : null].filter(Boolean).join(" · ")}</div>
         <div><b>Listed by</b>${r.owner ? "Owner (no commission)" : "Agent"}</div>
-        <div><b>Poster</b>${r.verified ? "✓ Phone-verified" : "Unverified"}</div>
+        <div><b>Poster</b>${r.src ? "Found on a public post — not yet verified" : (r.verified ? "✓ Phone-verified" : "Unverified")}</div>
       </div>
       <div class="contact" id="contactBox">
-        ${r._real
+        ${r.src
+          ? `<a class="cta" href="${r.src}" target="_blank" rel="noopener">View original post ↗</a>
+             <button class="ghost" onclick="doReport(${r.id})">Report</button>`
+          : r._real
           ? `<button class="cta" onclick="doReveal(${r.id})">Show contact</button>
              <button class="ghost" onclick="doReport(${r.id})">Report</button>`
           : `<button class="cta" onclick="alert('Demo listing — real contact reveal works on live posts.')">Show contact</button>

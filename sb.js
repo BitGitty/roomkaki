@@ -25,7 +25,7 @@ function mapRow(r) {
     verified: false, cooking: !!r.cooking_ok, aircon: !!r.aircon, couple: !!r.couple_ok,
     wifi: r.wifi !== false, hdb: r.is_hdb !== false, minStay: r.is_hdb === false ? 3 : 6,
     lat: r.lat, lng: r.lng, days: daysAgo(r.created_at), grad: GRADS[r.id % GRADS.length],
-    _real: true,
+    src: r.source_url || null, _real: true,
   };
 }
 
