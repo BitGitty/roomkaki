@@ -5,6 +5,7 @@ const DEMO = new URLSearchParams(location.search).has("demo");
 let rooms = (DEMO && typeof LISTINGS !== "undefined") ? LISTINGS.slice() : [];
 
 const $ = (s) => document.querySelector(s);
+const norm = (s) => String(s || "").normalize("NFC").toLowerCase();  // Burmese must match via NFC
 
 // ---------- i18n (EN / Burmese) ----------
 const I18N = {
@@ -61,7 +62,7 @@ function filtered() {
     (state.gender === "All" || r.gender === state.gender || r.gender === "Any") &&
     (!state.ownerOnly || r.owner) &&
     (state.maxPrice >= 3000 || r.price <= state.maxPrice) &&
-    (state.q === "" || (r.title + r.area + r.station).toLowerCase().includes(state.q.toLowerCase()))
+    (state.q === "" || norm(`${r.title} ${r.my || ""} ${r.area} ${r.station} ${r.desc || ""}`).includes(norm(state.q)))
   );
 }
 
@@ -306,6 +307,49 @@ async function openPost(existing) {
     $("#f_phone").value = ed.contact_phone || "";
     $("#f_owner").checked = !!ed.listed_by_owner; $("#f_cook").checked = !!ed.cooking_ok;
     $("#f_air").checked = !!ed.aircon; $("#f_couple").checked = !!ed.couple_ok;
+  }
+}
+
+// ---------- feedback (on-page, no GitHub account needed) ----------
+function openFeedback() {
+  const my = lang === "my";
+  openModal(`<h2>${my ? "အကြံပြုချက် ပေးပါ" : "Tell us what to add or fix"}</h2>
+    <p class="mut">${my ? "RoomKaki ကို ပိုကောင်းအောင် ဘာလုပ်ပေးရမလဲ? ရိုးရိုးလေး ရေးပို့လိုက်ပါ။" : "What should RoomKaki add, change or fix? Anything helps."}</p>
+    <textarea id="fbMsg" rows="4" maxlength="2000" placeholder="${my ? "ဒီမှာ ရေးပါ…" : "Write here…"}"></textarea>
+    <label>${my ? "ဆက်သွယ်ရန် (မဖြည့်လည်းရပါ)" : "Contact (optional)"}<input id="fbContact" maxlength="200" placeholder="email / phone / Telegram"></label>
+    <input id="fbHp" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="cta wide" id="fbBtn" onclick="sendFeedback()">${my ? "ပို့မယ်" : "Send"}</button>
+    <div id="fbOut" class="mut"></div>`);
+}
+
+async function sendFeedback() {
+  const msg = $("#fbMsg").value.trim();
+  const my = lang === "my";
+  if (msg.length < 3) { $("#fbOut").textContent = my ? "စာလေး အရင်ရေးပေးပါ" : "Please write a little first."; return; }
+  const btn = $("#fbBtn");
+  if (btn.disabled) return;
+  btn.disabled = true;
+  $("#fbOut").textContent = my ? "ပို့နေသည်…" : "Sending…";
+  try {
+    const r = await fetch(SB_URL + "/rest/v1/rpc/submit_suggestion", {
+      method: "POST",
+      headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_site: "roomkaki", p_kind: "feedback", p_message: msg,
+        p_email: $("#fbContact").value.trim() || null, p_page: location.pathname, p_hp: $("#fbHp").value || null }),
+    });
+    const out = await r.json();
+    if (out === "ok") {
+      $("#modalbox").innerHTML = `<button class="close" onclick="closeModal()">✕</button>
+        <h2>${my ? "✓ ရပါပြီ၊ ကျေးဇူးပါ" : "✓ Got it — thank you"}</h2>
+        <p class="mut">${my ? "သေချာဖတ်ပြီး ဆောင်ရွက်ပေးပါမယ်။" : "We read every message and act on it."}</p>
+        <button class="cta wide" onclick="closeModal()">${my ? "ပိတ်မယ်" : "Done"}</button>`;
+    } else {
+      $("#fbOut").textContent = my ? "ခဏနေ ပြန်ကြိုးစားပေးပါ" : "Please try again in a while.";
+      btn.disabled = false;
+    }
+  } catch (e) {
+    $("#fbOut").textContent = my ? "ဆက်သွယ်မှု ပြဿနာရှိနေသည် — ပြန်ကြိုးစားပါ" : "Connection problem — try again.";
+    btn.disabled = false;
   }
 }
 
