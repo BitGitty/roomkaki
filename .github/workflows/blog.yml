@@ -1,0 +1,28 @@
+name: blog-drip
+# Daily blog release, PC-independent (pattern: rightsatlas/site.yml).
+on:
+  schedule:
+    - cron: "47 1 * * *"   # 09:47 SGT daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  drip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Release one pending post
+        run: python scripts/blog_drip.py
+      - name: Rebuild blog pages + sitemap
+        run: python scripts/blog_build.py
+      - name: Commit release
+        run: |
+          git config user.name "BitGitty"
+          git config user.email "148478921+BitGitty@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "blog: daily drip release"
+          git push
