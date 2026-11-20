@@ -1,5 +1,5 @@
 {
- "last_release": "2026-11-19",
+ "last_release": "2026-11-20",
  "log": [
   {
    "date": "2026-11-18",
@@ -8,6 +8,10 @@
   {
    "date": "2026-11-19",
    "post": "02-hdb-room-rental-rules"
+  },
+  {
+   "date": "2026-11-20",
+   "post": "03-deposit-and-viewing-checklist"
   }
  ]
 }
