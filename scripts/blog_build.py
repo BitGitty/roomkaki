@@ -103,6 +103,14 @@ padding:16px 18px;margin-bottom:12px;text-decoration:none;box-shadow:var(--shado
 """
 
 
+def burmese_ok(s: str) -> bool:
+    """Block Zawgyi-encoded or un-normalized Burmese from going live (renders as garbage)."""
+    import unicodedata
+    if any(0x1060 <= ord(c) <= 0x1097 for c in s):   # Zawgyi stacked-form range
+        return False
+    return unicodedata.normalize("NFC", s) == s
+
+
 def build() -> int:
     posts = []
     for f in POSTS.glob("*.json"):
@@ -112,7 +120,9 @@ def build() -> int:
 
     for p in posts:
         my_block = ""
-        if p.get("my_approved") and p.get("body_my"):
+        if p.get("my_approved") and p.get("body_my") and not burmese_ok(p["body_my"] + p.get("title_my", "")):
+            print(f"blog build: BLOCKED Burmese for {p['slug']} (Zawgyi or not NFC)")
+        elif p.get("my_approved") and p.get("body_my"):
             my_block = (f'<div class="my-section" lang="my"><h2>{html.escape(p["title_my"])}</h2>'
                         f'{p["body_my"]}</div>')
         (BLOG / f"{p['slug']}.html").write_text(PAGE.format(
