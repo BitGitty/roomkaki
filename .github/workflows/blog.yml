@@ -19,6 +19,11 @@ jobs:
         run: python scripts/blog_drip.py
       - name: Rebuild blog pages + sitemap
         run: python scripts/blog_build.py
+      - name: Ping IndexNow (Bing/Yandex) with all blog URLs
+        run: |
+          URLS=$(ls blog/*.html | grep -v index | sed 's#^#"https://roomkaki.com/#; s#$#"#' | paste -sd, -)
+          curl -s -X POST https://api.indexnow.org/indexnow -H "Content-Type: application/json" \
+            -d "{\"host\":\"roomkaki.com\",\"key\":\"eb6e640b60d16c9c6f12372fc57d9a10\",\"urlList\":[\"https://roomkaki.com/blog/\",$URLS]}" -w "indexnow %{http_code}\n" || true
       - name: Commit release
         run: |
           git config user.name "BitGitty"
