@@ -76,7 +76,7 @@ function wantedCard(r) {
       <h3>${escId(r.title)}</h3>
       <div class="mrt">Prefers: ${escId(r.area)}${r.station ? ` · near ${escId(r.station)} MRT` : ""}</div>
       <div class="tags">
-        <span class="tag">${escId(r.gender)}</span>
+        <span class="tag">${escId(String(r.gender).replace(" only", ""))}</span>
         ${r.cooking ? '<span class="tag">Needs cooking</span>' : ""}
         ${r.couple ? '<span class="tag">Couple</span>' : ""}
       </div>
@@ -113,7 +113,7 @@ function card(r) {
 function render() {
   const list = filtered();
   const wanted = state.kind === "wanted";
-  $("#count").textContent = wanted ? `${list.length} people looking` : `${list.length} rooms`;
+  $("#count").textContent = wanted ? `${list.length} ${list.length === 1 ? "person" : "people"} looking` : `${list.length} rooms`;
   document.querySelectorAll("[data-kind]").forEach((b) => b.classList.toggle("on", b.dataset.kind === state.kind));
   if (wanted && !list.length) {
     $("#grid").innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 20px">
@@ -184,7 +184,7 @@ function openSheet(id) {
         <div class="facts">
           <div><b>Wants</b>${escId(r.type)}</div>
           <div><b>Preferred area</b>${escId(r.area)}${r.station ? ` · ${escId(r.station)} MRT` : ""}</div>
-          <div><b>Who</b>${escId(r.gender)}${r.couple ? " · couple" : ""}</div>
+          <div><b>Who</b>${escId(String(r.gender).replace(" only", ""))}${r.couple ? " · couple" : ""}</div>
           <div><b>Cooking</b>${r.cooking ? "Needs to cook" : "Not needed"}</div>
         </div>
         <div class="contact" id="contactBox">
