@@ -131,6 +131,13 @@ background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 13px;font:i
 .ck input{width:auto;margin:0}
 .contact a{text-decoration:none;text-align:center;display:block}
 
+/* room offers vs room wanted */
+.kindbar{max-width:1080px;margin:14px auto 0;padding:0 16px;display:flex;flex-wrap:wrap;
+align-items:center;gap:10px 16px}
+.kindpost{color:var(--brand);font-weight:700;font-size:.9rem;text-decoration:none}
+.badge.want{background:#6d4bb5;color:#fff}
+.card.wanted{border-left:4px solid #6d4bb5}
+
 /* listing photos */
 .photostrip{display:flex;gap:6px;overflow-x:auto;padding:8px 22px 0;scrollbar-width:thin}
 .photostrip img{height:96px;width:auto;border-radius:8px;object-fit:cover;flex:0 0 auto}

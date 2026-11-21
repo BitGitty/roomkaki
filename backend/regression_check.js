@@ -33,6 +33,16 @@ assert(out.includes("&lt;img"), "C1 escaped entity present");
 globalThis.rooms = [{ ...hostile, title: "normal listing title", price: 2800 }];
 assert(filtered().length === 1, "C9 S$2800 room visible by default");
 
+// Room-wanted posts (2026-11-21): kept out of the rooms feed, shown in the wanted feed, escaped
+globalThis.rooms = [{ ...hostile, title: "normal listing title", price: 900 },
+                    { ...hostile, id: 2, kind: "wanted", title: "<b>hostile wanted</b> title", price: 700 }];
+assert(filtered().length === 1 && filtered()[0].id === 1, "Wanted posts excluded from rooms feed");
+state.kind = "wanted";
+assert(filtered().length === 1 && filtered()[0].id === 2, "Wanted feed shows only wanted posts");
+const wout = card(globalThis.rooms[1]);
+assert(wout.includes("Looking for a room") && !wout.includes("<b>hostile"), "Wanted card renders + escapes");
+state.kind = "offer";
+
 // C6: phone sanitization pattern exists in reveal flow
 assert(/replace\(\/\[\^0-9\+ \]\/g/.test(app), "C6 phone sanitized before tel/wa render");
 

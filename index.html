@@ -46,6 +46,14 @@
   <p class="early"><a href="/blog/">📖 Free renting guides — scams, HDB rules, deposits →</a></p>
 </section>
 
+<div class="kindbar">
+  <div class="toggle">
+    <button data-kind="offer" class="on" onclick="setKind('offer')">🏠 Rooms for rent</button>
+    <button data-kind="wanted" onclick="setKind('wanted')">🙋 Looking for a room</button>
+  </div>
+  <a href="#" class="kindpost" onclick="openPost(null,'wanted');return false">Need a room? Post what you're looking for →</a>
+</div>
+
 <div class="filters">
   <select class="chip" data-filter="type">
     <option value="All">All room types</option>

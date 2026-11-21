@@ -25,7 +25,7 @@ function mapRow(r) {
     verified: false, cooking: !!r.cooking_ok, aircon: !!r.aircon, couple: !!r.couple_ok,
     wifi: r.wifi !== false, hdb: r.is_hdb !== false, minStay: r.is_hdb === false ? 3 : 6,
     lat: r.lat, lng: r.lng, days: daysAgo(r.created_at), grad: GRADS[r.id % GRADS.length],
-    src: r.source_url || null, _real: true,
+    src: r.source_url || null, kind: r.listing_kind || "offer", _real: true,
   };
 }
 
@@ -108,7 +108,7 @@ async function postListing(f) {
     transit_line: f.transit_line, station: f.station, walk_minutes: f.walk_minutes,
     gender_pref: f.gender_pref, is_hdb: f.is_hdb, listed_by_owner: f.listed_by_owner,
     cooking_ok: f.cooking_ok, aircon: f.aircon, couple_ok: f.couple_ok,
-    contact_phone: f.contact_phone,
+    contact_phone: f.contact_phone, listing_kind: f.listing_kind || "offer",
   }).select("id").single();
   if (error) return { error: error.message };
   return { id: data.id };
@@ -133,7 +133,7 @@ async function updateListing(id, f) {
     area: f.area, transit_line: f.transit_line, station: f.station, walk_minutes: f.walk_minutes,
     gender_pref: f.gender_pref, is_hdb: f.is_hdb, listed_by_owner: f.listed_by_owner,
     cooking_ok: f.cooking_ok, aircon: f.aircon, couple_ok: f.couple_ok,
-    contact_phone: f.contact_phone, status: "pending",
+    contact_phone: f.contact_phone, listing_kind: f.listing_kind || "offer", status: "pending",
   }).eq("id", id);
   return error ? { error: error.message } : { id };
 }

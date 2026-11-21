@@ -1,4 +1,4 @@
-let state = { type: "All", line: "All", gender: "All", ownerOnly: false, maxPrice: 3000, q: "", view: "grid" };
+let state = { kind: "offer", type: "All", line: "All", gender: "All", ownerOnly: false, maxPrice: 3000, q: "", view: "grid" };
 let map, markers = [];
 // Demo rooms only for design review (?demo=1) — the live site never shows fake listings.
 const DEMO = new URLSearchParams(location.search).has("demo");
@@ -57,6 +57,7 @@ function phBg(r) {
 
 function filtered() {
   return rooms.filter((r) =>
+    (r.kind || "offer") === state.kind &&
     (state.type === "All" || r.type === state.type) &&
     (state.line === "All" || r.line === state.line) &&
     (state.gender === "All" || r.gender === state.gender || r.gender === "Any") &&
@@ -66,7 +67,26 @@ function filtered() {
   );
 }
 
+function wantedCard(r) {
+  return `<article class="card wanted" tabindex="0" role="button" aria-label="${escId(r.title)}"
+    onclick="openSheet(${r.id})" onkeydown="if(event.key==='Enter')openSheet(${r.id})">
+    <div class="body">
+      <div><span class="badge want">Looking for a room</span> <span class="tag">${escId(r.type)}</span></div>
+      <div class="price" style="margin-top:8px">Budget S$${+r.price || 0}<small>/month</small></div>
+      <h3>${escId(r.title)}</h3>
+      <div class="mrt">Prefers: ${escId(r.area)}${r.station ? ` · near ${escId(r.station)} MRT` : ""}</div>
+      <div class="tags">
+        <span class="tag">${escId(r.gender)}</span>
+        ${r.cooking ? '<span class="tag">Needs cooking</span>' : ""}
+        ${r.couple ? '<span class="tag">Couple</span>' : ""}
+      </div>
+      <div class="meta">${r.days === 0 ? "Posted today" : `Posted ${r.days}d ago`}</div>
+    </div>
+  </article>`;
+}
+
 function card(r) {
+  if (r.kind === "wanted") return wantedCard(r);
   return `<article class="card" tabindex="0" role="button" aria-label="${escId(r.title)}"
     onclick="openSheet(${r.id})" onkeydown="if(event.key==='Enter')openSheet(${r.id})">
     <div class="ph" style="${phBg(r)}">
@@ -92,8 +112,19 @@ function card(r) {
 
 function render() {
   const list = filtered();
-  $("#count").textContent = `${list.length} rooms`;
-  $("#grid").innerHTML = list.map(card).join("") || (rooms.length === 0
+  const wanted = state.kind === "wanted";
+  $("#count").textContent = wanted ? `${list.length} people looking` : `${list.length} rooms`;
+  document.querySelectorAll("[data-kind]").forEach((b) => b.classList.toggle("on", b.dataset.kind === state.kind));
+  if (wanted && !list.length) {
+    $("#grid").innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:48px 20px">
+        <h3 style="margin:0 0 8px">No room-wanted posts yet</h3>
+        <p style="color:var(--mut);margin:0 0 18px">Looking for a room? Post what you need — landlords with a matching room can contact you.</p>
+        <button class="cta" onclick="openPost(null, 'wanted')">Post what you're looking for — free</button>
+      </div>`;
+    if (state.view === "map") renderMap(list);
+    return;
+  }
+  $("#grid").innerHTML = list.map(card).join("") || (rooms.filter((r) => (r.kind || "offer") === "offer").length === 0
     ? `<div style="grid-column:1/-1;text-align:center;padding:48px 20px">
         <h3 style="margin:0 0 8px">We just opened — no rooms yet</h3>
         <p style="color:var(--mut);margin:0 0 6px">Have a room to rent out? Post it free and be one of our founding listings.</p>
@@ -119,6 +150,11 @@ function renderMap(list) {
   if (pts.length) map.fitBounds(pts.map((r) => [r.lat, r.lng]), { padding: [40, 40], maxZoom: 14 });
 }
 
+function setKind(k) {
+  state.kind = k;
+  render();
+}
+
 function setView(v) {
   state.view = v;
   $("#grid").style.display = v === "grid" ? "grid" : "none";
@@ -136,6 +172,30 @@ function openSheet(id) {
   if (!r) return;
   track(`/ev/open/${id}`);
   try { history.replaceState(null, "", `#room-${id}`); } catch (e) {}
+  if (r.kind === "wanted") {
+    $("#sheet").innerHTML = `
+      <button class="close" onclick="closeSheet()" aria-label="Close">✕</button>
+      <div class="inner" style="padding-top:56px">
+        <span class="badge want">Looking for a room</span>
+        <div class="price" style="margin-top:10px">Budget S$${+r.price || 0}<small>/month</small></div>
+        <h2>${escId(r.title)}</h2>
+        <div class="safety">🛡️ <b>Landlords:</b> never ask for money before the person has viewed your room.</div>
+        <p>${escId(r.desc)}</p>
+        <div class="facts">
+          <div><b>Wants</b>${escId(r.type)}</div>
+          <div><b>Preferred area</b>${escId(r.area)}${r.station ? ` · ${escId(r.station)} MRT` : ""}</div>
+          <div><b>Who</b>${escId(r.gender)}${r.couple ? " · couple" : ""}</div>
+          <div><b>Cooking</b>${r.cooking ? "Needs to cook" : "Not needed"}</div>
+        </div>
+        <div class="contact" id="contactBox">
+          <button class="cta" onclick="doReveal(${r.id})">Show contact</button>
+          <button class="ghost" onclick="doReport(${r.id})">Report</button>
+          <button class="ghost" onclick="shareRoom(${r.id})" aria-label="Share">Share</button>
+        </div>
+      </div>`;
+    $("#panel").classList.add("open");
+    return;
+  }
   $("#sheet").innerHTML = `
     <button class="close" onclick="closeSheet()" aria-label="Close">✕</button>
     <div class="ph" style="${phBg(r)}"></div>
@@ -262,51 +322,59 @@ async function submitLogin() {
     : `✓ Check <b>${escId(email)}</b> for your sign-in link, then come back to this tab.`;
 }
 
-async function openPost(existing) {
+async function openPost(existing, kind) {
   const user = await refreshAuth();
-  if (!user) { openLogin("Log in first, then post your room."); return; }
+  if (!user) { openLogin("Log in first — it's free."); return; }
   const ed = (existing && existing.id) ? existing : null;
-  openModal(`<h2>${ed ? "Edit room" : "Post a room"}</h2>
-    <p class="mut">${ed ? "Edited rooms go back to review before they're live again." : "Free. Reviewed before it goes live — usually same day."}</p>
-    <div class="form2">
-      <label>Room type<select id="f_type">
-        <option value="common">Common room</option><option value="single">Single room</option>
-        <option value="master">Master room</option><option value="studio">Studio</option>
-        <option value="whole_unit">Whole unit</option></select></label>
-      <label>Rent S$/month<input id="f_price" type="number" min="200" max="6000" placeholder="850"></label>
-      <label>MRT line<select id="f_line">
-        <option value="EW">East West</option><option value="NS">North South</option>
+  const k = ed ? (ed.listing_kind || "offer") : (kind || "offer");
+  const W = k === "wanted";
+  const lineOpts = `<option value="EW">East West</option><option value="NS">North South</option>
         <option value="NE">North East</option><option value="CC">Circle</option>
-        <option value="DT">Downtown</option><option value="TE">Thomson-East Coast</option></select></label>
-      <label>Nearest MRT<input id="f_station" placeholder="Boon Lay"></label>
-      <label>Walk (min)<input id="f_walk" type="number" min="1" max="30" placeholder="6"></label>
-      <label>Area<input id="f_area" placeholder="Jurong West"></label>
-      <label>Preference<select id="f_gender">
-        <option value="any">Anyone</option><option value="female">Female only</option>
-        <option value="male">Male only</option></select></label>
-      <label>Property<select id="f_hdb"><option value="true">HDB</option><option value="false">Condo</option></select></label>
+        <option value="DT">Downtown</option><option value="TE">Thomson-East Coast</option>`;
+  const typeOpts = `<option value="common">Common room</option><option value="single">Single room</option>
+        <option value="master">Master room</option><option value="studio">Studio</option>
+        <option value="whole_unit">Whole unit</option>`;
+  openModal(`<h2>${ed ? "Edit post" : W ? "Looking for a room" : "Post a room"}</h2>
+    ${ed ? "" : `<div class="toggle" style="margin:10px 0 6px;display:inline-flex">
+      <button class="${W ? "" : "on"}" onclick="openPost(null,'offer')">I have a room</button>
+      <button class="${W ? "on" : ""}" onclick="openPost(null,'wanted')">I'm looking for a room</button></div>`}
+    <p class="mut">${ed ? "Edited posts go back to review before they're live again." : "Free. Reviewed before it goes live — usually same day."}</p>
+    <input id="f_kind" type="hidden" value="${k}">
+    <div class="form2">
+      <label>${W ? "Room you want" : "Room type"}<select id="f_type">${typeOpts}</select></label>
+      <label>${W ? "Budget S$/month" : "Rent S$/month"}<input id="f_price" type="number" min="100" max="6000" placeholder="${W ? "700" : "850"}"></label>
+      <label>${W ? "Preferred MRT line" : "MRT line"}<select id="f_line">${lineOpts}</select></label>
+      <label>${W ? "Near which MRT" : "Nearest MRT"}<input id="f_station" placeholder="Boon Lay"></label>
+      ${W ? "" : `<label>Walk (min)<input id="f_walk" type="number" min="1" max="30" placeholder="6"></label>`}
+      <label>${W ? "Preferred area" : "Area"}<input id="f_area" placeholder="Jurong West"></label>
+      <label>${W ? "Who is moving in" : "Preference"}<select id="f_gender">
+        <option value="any">${W ? "Prefer not to say" : "Anyone"}</option><option value="female">${W ? "Female" : "Female only"}</option>
+        <option value="male">${W ? "Male" : "Male only"}</option></select></label>
+      ${W ? "" : `<label>Property<select id="f_hdb"><option value="true">HDB</option><option value="false">Condo</option></select></label>`}
     </div>
-    <label class="full">Title<input id="f_title" maxlength="80" placeholder="Bright common room, 6 min to Boon Lay MRT"></label>
-    <label class="full">Description<textarea id="f_desc" rows="3" placeholder="Furnished, aircon, cooking allowed, available now…"></textarea></label>
+    <label class="full">Title<input id="f_title" maxlength="80" placeholder="${W ? "Working lady looking for common room near Jurong East" : "Bright common room, 6 min to Boon Lay MRT"}"></label>
+    <label class="full">Description<textarea id="f_desc" rows="3" placeholder="${W ? "When you need it, how long you'll stay, your job, any needs…" : "Furnished, aircon, cooking allowed, available now…"}"></textarea></label>
     <label class="full">Your WhatsApp / phone<input id="f_phone" placeholder="+65 9xxx xxxx"></label>
-    <label class="full">Photos (up to 6 — first is the cover)<input id="f_photos" type="file" accept="image/*" multiple></label>
+    ${W ? "" : `<label class="full">Photos (up to 6 — first is the cover)<input id="f_photos" type="file" accept="image/*" multiple></label>`}
     <div class="checks">
-      <label class="ck"><input id="f_owner" type="checkbox" checked> I'm the owner (not an agent)</label>
-      <label class="ck"><input id="f_cook" type="checkbox" checked> Cooking OK</label>
-      <label class="ck"><input id="f_air" type="checkbox" checked> Aircon</label>
-      <label class="ck"><input id="f_couple" type="checkbox"> Couple OK</label>
+      ${W ? "" : `<label class="ck"><input id="f_owner" type="checkbox" checked> I'm the owner (not an agent)</label>`}
+      <label class="ck"><input id="f_cook" type="checkbox" ${W ? "" : "checked"}> ${W ? "I need to cook" : "Cooking OK"}</label>
+      ${W ? "" : `<label class="ck"><input id="f_air" type="checkbox" checked> Aircon</label>`}
+      <label class="ck"><input id="f_couple" type="checkbox"> ${W ? "We are a couple" : "Couple OK"}</label>
     </div>
-    <button class="cta wide" id="postBtn" onclick="submitPost(${ed ? ed.id : ""})">${ed ? "Save changes" : "Post my room"}</button>
+    <button class="cta wide" id="postBtn" onclick="submitPost(${ed ? ed.id : ""})">${ed ? "Save changes" : W ? "Post what I'm looking for" : "Post my room"}</button>
     <div id="postMsg" class="mut"></div>`);
   if (ed) {
-    $("#f_type").value = ed.room_type; $("#f_price").value = ed.price_month;
-    $("#f_line").value = ed.transit_line || "EW"; $("#f_station").value = ed.station || "";
-    $("#f_walk").value = ed.walk_minutes || ""; $("#f_area").value = ed.area || "";
-    $("#f_gender").value = ed.gender_pref || "any"; $("#f_hdb").value = String(!!ed.is_hdb);
-    $("#f_title").value = ed.title || ""; $("#f_desc").value = ed.description || "";
-    $("#f_phone").value = ed.contact_phone || "";
-    $("#f_owner").checked = !!ed.listed_by_owner; $("#f_cook").checked = !!ed.cooking_ok;
-    $("#f_air").checked = !!ed.aircon; $("#f_couple").checked = !!ed.couple_ok;
+    const set = (id, v) => { const el = $("#" + id); if (el) el.value = v; };
+    const chk = (id, v) => { const el = $("#" + id); if (el) el.checked = v; };
+    set("f_type", ed.room_type); set("f_price", ed.price_month);
+    set("f_line", ed.transit_line || "EW"); set("f_station", ed.station || "");
+    set("f_walk", ed.walk_minutes || ""); set("f_area", ed.area || "");
+    set("f_gender", ed.gender_pref || "any"); set("f_hdb", String(!!ed.is_hdb));
+    set("f_title", ed.title || ""); set("f_desc", ed.description || "");
+    set("f_phone", ed.contact_phone || "");
+    chk("f_owner", !!ed.listed_by_owner); chk("f_cook", !!ed.cooking_ok);
+    chk("f_air", !!ed.aircon); chk("f_couple", !!ed.couple_ok);
   }
 }
 
@@ -397,10 +465,11 @@ function escId(s) {
 }
 
 async function submitPost(editId) {
-  const g = (id) => $("#" + id).value.trim();
-  const ck = (id) => $("#" + id).checked;
+  const g = (id) => { const el = $("#" + id); return el ? el.value.trim() : ""; };
+  const ck = (id) => { const el = $("#" + id); return el ? el.checked : false; };
+  const W = g("f_kind") === "wanted";
   if (!g("f_price") || !g("f_title") || !g("f_phone")) {
-    $("#postMsg").textContent = "Please fill in rent, title and your contact.";
+    $("#postMsg").textContent = W ? "Please fill in budget, title and your contact." : "Please fill in rent, title and your contact.";
     return;
   }
   if (g("f_title").length < 8) { $("#postMsg").textContent = "Title needs at least 8 characters."; return; }
@@ -412,19 +481,20 @@ async function submitPost(editId) {
     description: g("f_desc") || g("f_title"), area: g("f_area") || g("f_station") || "Singapore",
     transit_line: $("#f_line").value,
     station: g("f_station"), walk_minutes: +g("f_walk") || 0, gender_pref: $("#f_gender").value,
-    is_hdb: $("#f_hdb").value === "true", listed_by_owner: ck("f_owner"), cooking_ok: ck("f_cook"),
+    is_hdb: W ? true : g("f_hdb") === "true", listed_by_owner: ck("f_owner"), cooking_ok: ck("f_cook"),
     aircon: ck("f_air"), couple_ok: ck("f_couple"), contact_phone: g("f_phone"),
+    listing_kind: W ? "wanted" : "offer",
   };
   const res = editId ? await updateListing(editId, f) : await postListing(f);
   if (res.error) { $("#postMsg").textContent = "Couldn't save: " + res.error; if (btn) btn.disabled = false; return; }
   const listingId = editId || res.id;
-  const files = $("#f_photos").files;
+  const files = $("#f_photos") ? $("#f_photos").files : null;
   if (files && files.length) {
     $("#postMsg").textContent = `Uploading ${Math.min(files.length, 6)} photo(s)…`;
     await uploadPhotos(listingId, files);
   }
   $("#modalbox").innerHTML = `<button class="close" onclick="closeModal()">✕</button>
-    <h2>✓ Room ${editId ? "updated" : "submitted"}</h2>
+    <h2>✓ ${W ? "Post" : "Room"} ${editId ? "updated" : "submitted"}</h2>
     <p class="mut">Thanks! We review ${editId ? "edited" : "new"} listings before they go live —
     usually the same day. You'll see it in the feed once it's approved.</p>
     <button class="cta wide" onclick="closeModal()">Done</button>`;
