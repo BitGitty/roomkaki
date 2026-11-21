@@ -1,5 +1,5 @@
 {
- "last_release": "2026-11-20",
+ "last_release": "2026-11-21",
  "log": [
   {
    "date": "2026-11-18",
@@ -12,6 +12,10 @@
   {
    "date": "2026-11-20",
    "post": "03-deposit-and-viewing-checklist"
+  },
+  {
+   "date": "2026-11-21",
+   "post": "04-tenant-rights-basics-singapore"
   }
  ]
 }
