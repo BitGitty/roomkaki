@@ -87,6 +87,9 @@ def native(post):
 
 def main() -> int:
     only = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
+    # Gemini text keys are SHARED with the GG/Mousiki lanes (owner: they have priority). 11-23 a 109-post run
+    # spent all 21 keys for the day. Hard cap per run; raise only on purpose with --max.
+    cap = int(sys.argv[sys.argv.index("--max") + 1]) if "--max" in sys.argv else 30
     BANK.mkdir(parents=True, exist_ok=True)
     files = sorted(list((ROOT / "blog/posts").glob("*.json")) + list((ROOT / "blog/pending").glob("*.json")))
     ok = fail = 0
@@ -98,6 +101,8 @@ def main() -> int:
             continue
         if post.get("my_review") == "gemini-native" or (only and post["slug"] != only):
             continue
+        if ok + fail >= cap:
+            print(f"cap of {cap} reached (shared Gemini keys) — rest next run"); break
         try:
             t, b, model = native(post)
         except RuntimeError as e:
