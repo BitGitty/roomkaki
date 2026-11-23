@@ -494,7 +494,7 @@ async function openMyRooms() {
   const user = await refreshAuth();
   if (!user) { openLogin("Log in to see your rooms."); return; }
   openModal(`<h2>My rooms</h2><div id="myrooms" class="mut">Loading…</div>`);
-  const res = await myListings();
+  const [res, views] = await Promise.all([myListings(), myListingViews()]);
   const box = $("#myrooms");
   if (res.error) { box.textContent = res.error; return; }
   if (!res.rows.length) {
@@ -507,7 +507,8 @@ async function openMyRooms() {
     return `<div class="myroom">
       <div class="mr-main"><b>${escId(r.title)}</b><br>
         <span class="mut">${money(r.price_month)}/mo ·${escId(r.station || r.area || "")}</span>
-        <span class="st st-${r.status}">${STATUS_LABEL[r.status] || r.status}</span></div>
+        <span class="st st-${r.status}">${STATUS_LABEL[r.status] || r.status}</span>
+        ${r.status === "live" ? `<br><span class="mut">👀 ${+(views[r.id]?.views || 0)} views · ${+(views[r.id]?.views_7d || 0)} this week</span>` : ""}</div>
       <div class="myacts">
         <button class="ghost sm" onclick="editListing(${r.id})">Edit</button>
         ${r.status !== "removed" ? `<button class="ghost sm" onclick="removeMine(${r.id})">Remove</button>` : ""}

@@ -164,6 +164,31 @@ whole flat; indicative) and "Resale flat prices". Medians of the last 12 months;
 """
 
 
+def own_panel():
+    """Real ROOM asking rents from RoomKaki's own posts (organic only, not found listings). Hidden until there are
+    enough posts to be meaningful — no thin or fake statistics."""
+    anon = "sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b"
+    url = ("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/public_listings"
+           "?select=room_type,price_month,source_url&market_id=eq.sg&listing_kind=eq.offer")
+    try:
+        req = urllib.request.Request(url, headers={**UA, "apikey": anon, "Authorization": f"Bearer {anon}"})
+        rows = json.loads(urllib.request.urlopen(req, timeout=30).read())
+    except Exception:                                            # noqa: BLE001
+        return ""
+    own = [r for r in rows if not r.get("source_url")]
+    if len(own) < 10:
+        return ""
+    by = defaultdict(list)
+    for r in own:
+        by[r["room_type"]].append(r["price_month"])
+    names = {"common": "Common room", "single": "Single room", "master": "Master room", "studio": "Studio", "whole_unit": "Whole unit"}
+    trs = "".join(f"<tr><td>{names.get(k, k)}</td><td>{money(st.median(v))}</td><td>{len(v)}</td></tr>"
+                  for k, v in sorted(by.items()) if len(v) >= 3)
+    return (f"<div class='panelbox'><p class='fld' style='margin-top:0'>🏠 Real room rents on RoomKaki</p>"
+            f"<table class='tt'><tr><th>Room type</th><th>Median asking rent</th><th>Posts</th></tr>{trs}</table>"
+            f"<p class='note'>From {len(own)} live posts on RoomKaki (asking prices, Singapore).</p></div>")
+
+
 def note_panel():
     """Monthly market note: key figures QUOTED from a published report, credited + linked (never scraped).
     Update market/notes/latest.json each month after reading the new report."""
@@ -291,7 +316,7 @@ def render(d):
             f"per bedroom {money(n4['room_est'])}*</p></div><p class='fld'>4-room median rent, last 24 months</p>"
             f"{spark(n4['rent_series'], d['rent_months'])}</div>"
             f"<div class='panelbox'><p class='fld' style='margin-top:0'>All flat types, Singapore-wide</p>{table(nat)}</div>"
-            + note_panel() + private_panel() +
+            + own_panel() + note_panel() + private_panel() +
             f"<div class='panelbox'><p class='fld' style='margin-top:0'>4-room rent by town (cheapest first) — tap a town</p>"
             f"<div style='overflow-x:auto'><table class='tt'><tr><th>Town</th><th>Median rent</th><th>Change</th><th>Per bedroom*</th></tr>"
             f"{town_list}</table></div></div>" + FOOT)

@@ -30,6 +30,12 @@ function mapRow(r) {
   };
 }
 
+async function myListingViews() {
+  const { data, error } = await sb.rpc("my_listing_views");
+  if (error) return {};
+  return Object.fromEntries((data || []).map((r) => [r.listing_id, r]));
+}
+
 async function createAlert(market, kind, query, maxPrice) {
   const { data, error } = await sb.rpc("create_alert",
     { p_market: market, p_kind: kind, p_query: query || null, p_max_price: maxPrice || null });

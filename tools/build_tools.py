@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent
 SITE = "https://roomkaki.com"
 
 TOOLS = [  # (slug, icon, title, one-line description) — order = order on the Tools page
+    ("fair-rent", "⚖️", "Is this rent fair?", "Enter an asking rent and area — see if it's cheap, fair or high (official data)."),
     ("commute", "🚇", "Commute checker", "From your room's MRT to your work's MRT: line changes and rough travel time."),
     ("true-cost", "🧮", "True monthly cost", "Rent + bills + transport + food. Compare up to 3 rooms honestly."),
     ("stamp-duty", "🧾", "Tenancy stamp duty", "How much stamp duty your rental agreement needs (IRAS formula)."),

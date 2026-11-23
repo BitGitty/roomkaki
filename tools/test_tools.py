@@ -95,6 +95,16 @@ async def main():
         await fill(pg, "#from", "Bishan"); await fill(pg, "#to", "Bishan")
         t = await pg.inner_text("#out"); check("Same station" in t, "Commute: same station handled", t)
 
+        await pg.goto(u + "fair-rent.html")
+        await pg.wait_for_function("document.getElementById('town').options.length > 10")
+        await pg.select_option("#what", "4-ROOM"); await pg.select_option("#town", "WOODLANDS")
+        await fill(pg, "#ask", 3100)
+        t = await pg.inner_text("#out"); check("Fair price" in t, "Fair rent: Woodlands 4-room at its median → fair", t)
+        await fill(pg, "#ask", 1500)
+        t = await pg.inner_text("#out"); check("Much cheaper" in t, "Fair rent: 4-room at half the median → scam warning", t)
+        await pg.select_option("#what", "common"); await pg.dispatch_event("#what", "input"); await fill(pg, "#ask", 700)
+        t = await pg.inner_text("#out"); check("Fair price" in t, "Fair rent: Woodlands common room S$700 → fair", t)
+
         await pg.goto(u)
         n = await pg.eval_on_selector_all(".toolcard", "c => c.length")
         check(n >= 9, "Tools index lists the built tools", n)

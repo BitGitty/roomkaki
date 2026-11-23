@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is this rent fair? · RoomKaki</title>
+<meta name="description" content="Enter an asking rent and area — see if it&#x27;s cheap, fair or high (official data).">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/fair-rent.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="Is this rent fair? · RoomKaki">
+<meta property="og:description" content="Enter an asking rent and area — see if it&#x27;s cheap, fair or high (official data).">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Is this rent fair? — RoomKaki", "description": "Enter an asking rent and area — see if it's cheap, fair or high (official data).", "url": "https://roomkaki.com/tools/fair-rent.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "SGD"}, "publisher": {"@type": "Organization", "name": "RoomKaki", "url": "https://roomkaki.com"}}</script>
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a><a href="/market/">📊 Market</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>⚖️ Is this rent fair?</h1>
+<p class="lead">Enter an asking rent and area — see if it&#x27;s cheap, fair or high (official data).</p>
+<div class="panelbox">
+  <label class="fld" for="what">What is being rented?</label>
+  <select id="what">
+    <option value="common">A common room</option><option value="bed">A bed-space (shared room)</option>
+    <option value="master">A master room</option>
+    <option value="3-ROOM">Whole 3-room HDB flat</option><option value="4-ROOM">Whole 4-room HDB flat</option>
+    <option value="5-ROOM">Whole 5-room HDB flat</option><option value="EXECUTIVE">Whole Executive HDB flat</option>
+  </select>
+  <label class="fld" for="town">Town</label>
+  <select id="town"><option value="">Loading towns…</option></select>
+  <label class="fld" for="ask">Asking rent (S$ / month)</label>
+  <input id="ask" type="number" min="1" placeholder="e.g. 750" inputmode="numeric">
+  <div class="result" id="out" hidden></div>
+  <p class="note" id="src">Whole flats are compared with the town's official median rent over the last 12 months (HDB data via
+  data.gov.sg, refreshed monthly). Rooms are compared with an estimate made from those official flat rents — real room prices
+  vary with the flat, floor and what's included.</p>
+</div>
+<script>
+let MK = null;
+const $id = (i) => document.getElementById(i);
+const nice = (t) => t.toLowerCase().replace(/(^|[\s/])\w/g, (c) => c.toUpperCase());
+fetch("/market/market.json").then((r) => r.json()).then((d) => {
+  MK = d;
+  $id("town").innerHTML = `<option value="">Choose…</option>` + Object.keys(d.towns).sort()
+    .filter((t) => d.towns[t]["4-ROOM"].rent || d.towns[t]["3-ROOM"].rent)
+    .map((t) => `<option value="${t}">${nice(t)}</option>`).join("");
+  $id("src").innerHTML += ` Data to <b>${d.rent_latest}</b>.`;
+});
+function verdict(ask, lo, hi) {
+  if (ask < lo * 0.7) return ["warn", "Much cheaper than usual", "30%+ below typical can be a scam bait — never pay before viewing in person."];
+  if (ask < lo) return ["", "Cheaper than usual", "Good deal if the room is real — check what's included."];
+  if (ask <= hi) return ["", "Fair price", "In the usual range for this area."];
+  if (ask <= hi * 1.2) return ["mid", "A bit high", "Ask what's included (utilities, aircon, cooking) or try to negotiate."];
+  return ["warn", "High for this area", "Well above usual — compare other rooms before agreeing."];
+}
+function calc() {
+  const out = $id("out"), what = $id("what").value, town = $id("town").value, ask = +$id("ask").value;
+  if (!MK || !town || !(ask > 0)) { out.hidden = true; return; }
+  const row = MK.towns[town];
+  let lo, hi, basis;
+  if (what.endsWith("ROOM") || what === "EXECUTIVE") {
+    const m = row[what].rent;
+    if (!m) { out.hidden = false; out.className = "result mid"; out.innerHTML = `<div class="big">Not enough data</div><p>Too few ${what.toLowerCase()} rentals in ${nice(town)} to compare.</p>`; return; }
+    lo = m * 0.9; hi = m * 1.1; basis = `official median ${what.toLowerCase()} rent in ${nice(town)}: S$${m.toLocaleString("en")}`;
+  } else {
+    const m4 = row["4-ROOM"].rent || (row["3-ROOM"].rent ? row["3-ROOM"].rent * 1.15 : null);
+    if (!m4) { out.hidden = true; return; }
+    const k = { bed: 0.7, common: 1, master: 1.5 }[what];
+    lo = Math.round(m4 / 3 * 0.55 * k / 10) * 10; hi = Math.round(m4 / 3 * 0.8 * k / 10) * 10;
+    basis = `estimated usual range for this room type in ${nice(town)}`;
+  }
+  const [cls, label, tip] = verdict(ask, lo, hi);
+  out.hidden = false; out.className = "result " + cls;
+  out.innerHTML = `<div class="big">${label}</div><p>Usual: <b>S$${Math.round(lo).toLocaleString("en")}–${Math.round(hi).toLocaleString("en")}</b> · ${basis}</p><p class="note">${tip}</p>`;
+}
+["what", "town", "ask"].forEach((i) => $id(i).addEventListener("input", calc));
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>
