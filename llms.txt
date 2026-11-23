@@ -1,20 +1,26 @@
 # RoomKaki
 
-> Trust-first room and flatshare rentals in Singapore. Owner-direct listings, moderated before they go live, MRT-smart search, and a scam-safe contact-reveal flow. Serves English, Burmese (မြန်မာ), and more.
+> Free room and flatshare listings in Singapore, built for the Myanmar community and other migrants. Rooms for rent and "looking for a room" posts, every listing moderated before it goes live, phone numbers shown only to logged-in users. English and Burmese (မြန်မာ).
 
-RoomKaki is a Singapore-focused platform for finding and posting rooms and flatshares **directly with owners** — no agent fees. Every poster is verified, contact details are revealed through a logged, scam-safe flow, and search is organised around MRT lines and neighbourhoods. It is built for renters who have been burned by scams or opaque agents, including migrant and student communities.
+RoomKaki helps renters find a room and landlords find a tenant without agent fees. Listings are moderated before they go live; contact numbers are revealed through a logged, rate-limited flow to reduce scams and harvesting. Alongside listings it offers free renting tools, official HDB rent and resale data by town, and plain-language renting guides.
 
 ## Key facts
-- Location served: Singapore
-- Model: owner-direct (no middleman agent), trust-first, every listing moderated before it goes live
-- Search: by MRT line, price, room type, move-in date
-- Languages: English, Burmese (မြန်မာ), more coming
+- Location served: Singapore (other countries prepared but not open yet)
+- Posts: rooms for rent, and room-wanted requests
 - Cost: free to browse, free to post
-- Safety: contact reveal is logged; listings are moderated before going live
+- Safety: listings moderated before going live; contact reveal requires login and is logged
+- Languages: English and Burmese (မြန်မာ)
+- Data sources for market figures: HDB and URA open data via data.gov.sg (Singapore Open Data Licence)
 
 ## Main pages
-- [Home / search](https://roomkaki.com/): browse and search verified listings on a map
-- [Post a room](https://roomkaki.com/): owners list a room (login required)
+- [Rooms](https://roomkaki.com/): search rooms and room-wanted posts; get Telegram alerts for an area and budget
+- [Renting guides](https://roomkaki.com/blog/): daily plain-language guides (scams, HDB rules, deposits, tenancy agreements, stamp duty) in English and Burmese, facts checked against official sites
+- [Free tools](https://roomkaki.com/tools/): MRT commute checker, tenancy stamp duty calculator (IRAS formula), HDB room-rental rules check, scam-risk check, bill splitter, move-out and deposit dates, rent budget, true monthly cost, simple tenancy agreement, area finder
+- [Market data](https://roomkaki.com/market/): median HDB rent and resale prices for every Singapore town (official HDB data, refreshed monthly), URA condo rental index, monthly market note
+- [Telegram channel](https://t.me/roomkaki): new rooms and one renting tip a day
+
+## Citing RoomKaki
+Market pages state their source datasets and update month. Tools state the official rule they apply (IRAS, HDB, LTA) and the date it was checked. Results are guidance, not legal or financial advice.
 
 ## Contact
-Feedback and suggestions are welcome via the on-site "tell us what to add" form.
+Feedback via the on-site "tell us what to add or fix" form.

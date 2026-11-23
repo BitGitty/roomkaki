@@ -30,6 +30,7 @@ PAGE = """<!DOCTYPE html>
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{site}/blog/{slug}.html">
 <meta property="og:image" content="{site}/og.png">
+<script type="application/ld+json">{ld}</script>
 <style>
 .post{{max-width:720px;margin:0 auto;padding:24px 16px 60px}}
 .post h1{{font-size:1.6rem;line-height:1.3;margin:10px 0 6px}}
@@ -130,7 +131,14 @@ def build() -> int:
         (BLOG / f"{p['slug']}.html").write_text(PAGE.format(
             title=html.escape(p["title_en"]), desc=html.escape(p["summary_en"]),
             slug=p["slug"], date=p["date"], body_en=p["body_en"], my_block=my_block,
-            site=SITE), encoding="utf-8")
+            site=SITE, ld=json.dumps({
+                "@context": "https://schema.org", "@type": "Article", "headline": p["title_en"],
+                "description": p["summary_en"], "datePublished": p["date"], "dateModified": p["date"],
+                "inLanguage": ["en", "my"] if my_block else "en", "url": f"{SITE}/blog/{p['slug']}.html",
+                "image": f"{SITE}/og.png", "author": {"@type": "Organization", "name": "RoomKaki", "url": SITE},
+                "publisher": {"@type": "Organization", "name": "RoomKaki", "url": SITE},
+                "citation": [f["source"] for f in p.get("facts_checked", []) if f.get("source", "").startswith("http")][:8],
+            }, ensure_ascii=False).replace("</", "<\\/")), encoding="utf-8")
 
     rows = "\n".join(INDEX_ROW.format(slug=p["slug"], title=html.escape(p["title_en"]),
                                       date=p["date"], summary=html.escape(p["summary_en"]))

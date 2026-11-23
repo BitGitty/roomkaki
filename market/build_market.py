@@ -145,6 +145,7 @@ HEAD = """<!DOCTYPE html>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
 <meta property="og:title" content="{title} · RoomKaki"><meta property="og:description" content="{desc}">
 <meta property="og:image" content="{site}/og.png">
+<script type="application/ld+json">{ld}</script>
 </head><body>
 <header><a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a><div class="grow"></div>
 <a class="cta" href="/" style="text-decoration:none">Find a room</a></header>
@@ -213,6 +214,18 @@ def spark_idx(series, labels):
     return re.sub(r"S\$([\d,]+)", lambda m: f"{int(m.group(1).replace(',', '')) / 100:.0f}", s)
 
 
+def dataset_ld(name, desc, path, d, place="Singapore"):
+    """schema.org Dataset — lets search engines and AI assistants cite RoomKaki as the source of these figures."""
+    return json.dumps({
+        "@context": "https://schema.org", "@type": "Dataset", "name": name, "description": desc,
+        "url": f"{SITE}/market/{path}", "creator": {"@type": "Organization", "name": "RoomKaki", "url": SITE},
+        "isBasedOn": [f"https://data.gov.sg/datasets/{RENT_ID}/view", f"https://data.gov.sg/datasets/{RESALE_ID}/view"],
+        "license": "https://data.gov.sg/open-data-licence", "spatialCoverage": {"@type": "Place", "name": place},
+        "temporalCoverage": f"{d['rent_months'][0]}/{d['rent_latest']}", "dateModified": d["rent_latest"],
+        "variableMeasured": ["median monthly HDB rent", "median HDB resale price"], "inLanguage": "en"},
+        ensure_ascii=False).replace("</", "<\\/")
+
+
 def money(v):
     return f"S${v:,.0f}" if v else "–"
 
@@ -267,6 +280,8 @@ def render(d):
         f"<td>{chg(x['rent_yoy'])}</td><td>{money(x['room_est'])}</td></tr>" for t, x in rows)
     n4 = nat["4-ROOM"]
     idx = HEAD.format(title="HDB rent & resale prices by town", path="",
+                      ld=dataset_ld("HDB rent and resale prices by town, Singapore",
+                                    "Median HDB whole-flat rents and resale prices for every Singapore town, from official HDB data.", "", d),
                       desc=f"Median HDB rents and resale prices for every Singapore town, from official HDB data. "
                            f"Updated to {d['rent_latest']}.", site=SITE)
     idx += (f"<h1>📊 HDB rent &amp; price data</h1><p class='lead'>Real rents and resale prices from HDB's official data — "
@@ -286,6 +301,9 @@ def render(d):
         if not x:
             continue
         pg = HEAD.format(title=f"{title(t)} HDB rent & resale prices", path=f"{slug(t)}.html", site=SITE,
+                         ld=dataset_ld(f"HDB rent and resale prices in {title(t)}, Singapore",
+                                       f"Median HDB rents and resale prices in {title(t)} by flat type, from official HDB data.",
+                                       f"{slug(t)}.html", d, f"{title(t)}, Singapore"),
                          desc=f"Median HDB rent and resale prices in {title(t)}, Singapore, from official HDB data "
                               f"to {d['rent_latest']}.")
         pg += (f"<p class='crumb'><a href='/market/'>← All towns</a></p><h1>{title(t)}: HDB rent &amp; prices</h1>"

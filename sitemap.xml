@@ -1,24 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://roomkaki.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://roomkaki.com/blog/</loc></url>
-  <url><loc>https://roomkaki.com/blog/room-prices-singapore-2026.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/spot-fake-room-photos.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/tenant-rights-basics-singapore.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/deposit-and-viewing-checklist.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/hdb-room-rental-rules.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/rental-scams-singapore-checklist.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/</loc></url>
-  <url><loc>https://roomkaki.com/tools/commute.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/true-cost.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/stamp-duty.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/hdb-room-check.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/scam-check.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/bill-split.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/move-out-dates.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/rent-budget.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/tenancy-agreement.html</loc></url>
-  <url><loc>https://roomkaki.com/tools/area-finder.html</loc></url>
   <url><loc>https://roomkaki.com/market/</loc></url>
   <url><loc>https://roomkaki.com/market/ang-mo-kio.html</loc></url>
   <url><loc>https://roomkaki.com/market/bedok.html</loc></url>
@@ -48,4 +30,22 @@
   <url><loc>https://roomkaki.com/market/toa-payoh.html</loc></url>
   <url><loc>https://roomkaki.com/market/woodlands.html</loc></url>
   <url><loc>https://roomkaki.com/market/yishun.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/</loc></url>
+  <url><loc>https://roomkaki.com/blog/room-prices-singapore-2026.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/spot-fake-room-photos.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/tenant-rights-basics-singapore.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/deposit-and-viewing-checklist.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/hdb-room-rental-rules.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/rental-scams-singapore-checklist.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/</loc></url>
+  <url><loc>https://roomkaki.com/tools/commute.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/true-cost.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/stamp-duty.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/hdb-room-check.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/scam-check.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/bill-split.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/move-out-dates.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/rent-budget.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/tenancy-agreement.html</loc></url>
+  <url><loc>https://roomkaki.com/tools/area-finder.html</loc></url>
 </urlset>

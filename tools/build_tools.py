@@ -3,6 +3,7 @@ Every page gets the same header, tabs, disclaimer footer and analytics. Run afte
   python tools/build_tools.py
 """
 import html
+import json
 import re
 from pathlib import Path
 
@@ -36,6 +37,7 @@ HEAD = """<!DOCTYPE html>
 <meta property="og:title" content="{title} · RoomKaki">
 <meta property="og:description" content="{desc}">
 <meta property="og:image" content="{site}/og.png">
+<script type="application/ld+json">{ld}</script>
 </head>
 <body>
 <header>
@@ -67,7 +69,13 @@ def build() -> int:
         if not src.exists():
             continue
         body = src.read_text(encoding="utf-8")
-        page = HEAD.format(title=html.escape(title), desc=html.escape(desc), site=SITE, path=f"{slug}.html") + \
+        ld = json.dumps({"@context": "https://schema.org", "@type": "WebApplication", "name": f"{title} — RoomKaki",
+                         "description": desc, "url": f"{SITE}/tools/{slug}.html", "applicationCategory": "UtilitiesApplication",
+                         "operatingSystem": "Any (web browser)", "isAccessibleForFree": True,
+                         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "SGD"},
+                         "publisher": {"@type": "Organization", "name": "RoomKaki", "url": SITE}},
+                        ensure_ascii=False).replace("</", "<\\/")
+        page = HEAD.format(title=html.escape(title), desc=html.escape(desc), site=SITE, path=f"{slug}.html", ld=ld) + \
             f'<p class="crumb"><a href="/tools/">← All tools</a></p>\n<h1>{icon} {html.escape(title)}</h1>\n' + \
             f'<p class="lead">{html.escape(desc)}</p>\n' + body + FOOT
         (ROOT / f"{slug}.html").write_text(page, encoding="utf-8")
@@ -77,7 +85,11 @@ def build() -> int:
         f'<span>{html.escape(d)}</span></a>'
         for s, i, t, d in TOOLS if (ROOT / "src" / f"{s}.html").exists())
     index = HEAD.format(title="Free renting tools", desc="Free tools for renting a room in Singapore: commute, "
-                        "stamp duty, scam check, bill splitting and more.", site=SITE, path="") + \
+                        "stamp duty, scam check, bill splitting and more.", site=SITE, path="",
+                        ld=json.dumps({"@context": "https://schema.org", "@type": "CollectionPage",
+                                       "name": "Free renting tools — RoomKaki", "url": f"{SITE}/tools/",
+                                       "hasPart": [{"@type": "WebApplication", "name": t, "url": f"{SITE}/tools/{s}.html"}
+                                                   for s, _i, t, _d in TOOLS]}, ensure_ascii=False)) + \
         '<h1>🧰 Free renting tools</h1>\n<p class="lead">Quick, free tools for renting a room in Singapore. ' \
         'No sign-up. Nothing you type is saved.</p>\n' + f'<div class="toolgrid">\n{cards}\n</div>' + FOOT
     (ROOT / "index.html").write_text(index, encoding="utf-8")
