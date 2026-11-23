@@ -105,6 +105,15 @@ def main() -> int:
         return 0
     f = gather()
     found = rules(f)
+    # Monday-morning owner to-do reminder (owner 11-23: "leave those that need me and remind me again")
+    now = datetime.now(timezone.utc)
+    todo = json.loads((ROOT / "backend" / "owner_todo.json").read_text(encoding="utf-8")).get("items", [])
+    if todo and (now.weekday() == 0 and now.hour < 6 or "--remind" in sys.argv):   # first run on Monday SGT morning
+        tok, chat = os.environ.get("ROOMKAKI_BOT_TOKEN"), os.environ.get("OWNER_CHAT_ID")
+        msg = "📋 RoomKaki — things only you can do this week:\n\n" + "\n\n".join(f"{i}. {t}" for i, t in enumerate(todo, 1))
+        print(msg)
+        if tok and chat:
+            get(f"https://api.telegram.org/bot{tok}/sendMessage", data={"chat_id": chat, "text": msg, "disable_web_page_preview": True})
     summary = (f"site {'ok' if f.get('site_ok') else 'DOWN'} · db {'ok' if f.get('db_ok') else 'DOWN'} · last guide "
                f"{f.get('last_release')} · queue {f.get('ready_guides')} · pending {f.get('pending', '?')} · "
                f"telegram job {('%.1f h ago' % f['tg_age_h']) if f.get('tg_age_h') is not None else '?'}")
