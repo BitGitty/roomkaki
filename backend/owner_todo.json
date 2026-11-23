@@ -4,6 +4,7 @@
   "Ask 2-3 friends who rent out a room to post free on roomkaki.com (or send me their details — I post it for them). One real room beats all promotion.",
   "Print the QR poster and put it up at Peninsula Plaza / temples / Myanmar shops: https://roomkaki.com/promo/poster_A4.pdf",
   "Short videos (TikTok / YouTube Shorts) from our guides: tell me which account to post from, and I make and upload them.",
-  "Share the Telegram channel https://t.me/roomkaki in your Myanmar Telegram/FB groups (must be done by a person, not a bot)."
+  "Share the Telegram channel https://t.me/roomkaki in your Myanmar Telegram/FB groups (must be done by a person, not a bot).",
+  "Security: turn on 2-step login (2FA) on the accounts that control RoomKaki — GitHub, Cloudflare (domain), Supabase (database), Resend (email) and Telegram. If any one of these is taken over, the whole site is. Takes ~5 min each."
  ]
 }
