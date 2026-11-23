@@ -1,28 +1,40 @@
 User-agent: *
 Allow: /
+Disallow: /studio/
 
 # Answer engines / AI assistants — explicitly welcome, so AI browsers can read and cite us
 User-agent: GPTBot
 Allow: /
+Disallow: /studio/
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /studio/
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /studio/
 User-agent: ClaudeBot
 Allow: /
+Disallow: /studio/
 User-agent: Claude-Web
 Allow: /
+Disallow: /studio/
 User-agent: anthropic-ai
 Allow: /
+Disallow: /studio/
 User-agent: PerplexityBot
 Allow: /
+Disallow: /studio/
 User-agent: Google-Extended
 Allow: /
+Disallow: /studio/
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /studio/
 User-agent: CCBot
 Allow: /
+Disallow: /studio/
 User-agent: Bingbot
 Allow: /
+Disallow: /studio/
 
 Sitemap: https://roomkaki.com/sitemap.xml

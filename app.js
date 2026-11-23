@@ -328,14 +328,11 @@ function closeSheet() {
 }
 
 // lightweight event beacon (same RPC as pageviews; pseudo-paths /ev/open/<id>, /ev/out/<id>)
+// "/ev/<kind>/<label>" -> a site event (track.js), kept out of the page-view counts
 function track(path) {
   try {
-    fetch(SB_URL + "/rest/v1/rpc/track_view", {
-      method: "POST",
-      headers: { apikey: SB_ANON, Authorization: "Bearer " + SB_ANON, "Content-Type": "application/json" },
-      body: JSON.stringify({ p_site: "roomkaki", p_path: path, p_ref: null }),
-      keepalive: true,
-    }).catch(() => {});
+    const [, , kind, ...rest] = String(path).split("/");
+    if (window.rkEvent && kind) window.rkEvent(kind, rest.length ? decodeURIComponent(rest.join("/")) : null);
   } catch (e) {}
 }
 
