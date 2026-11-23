@@ -211,11 +211,16 @@ def chg(v):
 
 
 def spark(series, months, color="#0d9488"):
-    pts = [(i, v) for i, v in enumerate(series) if v]
-    if len(pts) < 4:
+    raw = [(i, v) for i, v in enumerate(series) if v]
+    if len(raw) < 4:
         return '<p class="mut">Not enough data for a trend.</p>'
+    # 3-month rolling average: monthly medians move in S$100 steps and look jumpier than the real trend
+    pts = [(i, sum(v for _, v in raw[max(0, k - 2):k + 1]) / len(raw[max(0, k - 2):k + 1])) for k, (i, _) in enumerate(raw)]
     W, H, P = 640, 180, 28
     lo, hi = min(v for _, v in pts), max(v for _, v in pts)
+    mid, need = (lo + hi) / 2, 0.2 * sum(v for _, v in pts) / len(pts)   # show at least a ±10% band so noise stays small
+    if hi - lo < need:
+        lo, hi = mid - need / 2, mid + need / 2
     span = (hi - lo) or 1
     xy = [(P + i * (W - 2 * P) / (len(series) - 1), H - P - (v - lo) / span * (H - 2 * P)) for i, v in pts]
     path = " ".join(f"{'M' if k == 0 else 'L'}{x:.1f},{y:.1f}" for k, (x, y) in enumerate(xy))
