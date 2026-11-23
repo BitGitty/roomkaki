@@ -1,5 +1,5 @@
 {
- "last_release": "2026-11-22",
+ "last_release": "2026-11-23",
  "log": [
   {
    "date": "2026-11-18",
@@ -20,6 +20,10 @@
   {
    "date": "2026-11-22",
    "post": "05-spot-fake-room-photos"
+  },
+  {
+   "date": "2026-11-23",
+   "post": "006-room-prices-singapore-2026"
   }
  ]
 }
