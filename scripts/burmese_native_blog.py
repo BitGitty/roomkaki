@@ -23,7 +23,7 @@ import tts_gemini as T  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 BANK = Path(r"D:\progress-ledger\BURMESE_NATIVE")
-MODELS = ("gemini-3.8-flash", "gemini-3.5-flash")
+MODELS = ("gemini-3.5-flash", "gemini-3.8-flash")   # 3.5 has been the reliable one (11-23 runs)
 
 PROMPT = """You are a native Burmese writer for a Singapore room-rental website used by Myanmar people.
 Write the Burmese version of the guide below in natural, everyday Burmese (Myanmar Unicode, NOT Zawgyi) that an
@@ -79,7 +79,7 @@ def native(post):
             except urllib.error.HTTPError as e:
                 last = f"{model}: HTTP {e.code}"
                 if e.code == 429:
-                    break          # this key is rate-limited, try the next key
+                    time.sleep(5)  # per-model quota: fall through to the backup model, then the next key
             except (TimeoutError, KeyError, ValueError, json.JSONDecodeError) as e:
                 last = f"{model}: {type(e).__name__}"
     raise RuntimeError(last)
@@ -91,7 +91,11 @@ def main() -> int:
     files = sorted(list((ROOT / "blog/posts").glob("*.json")) + list((ROOT / "blog/pending").glob("*.json")))
     ok = fail = 0
     for f in files:
-        post = json.loads(f.read_text(encoding="utf-8"))
+        try:
+            post = json.loads(f.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            print(f"SKIP {f.name}: not readable yet (still being written?)")
+            continue
         if post.get("my_review") == "gemini-native" or (only and post["slug"] != only):
             continue
         try:

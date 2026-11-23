@@ -1,0 +1,13 @@
+{
+ "slug": "occupancy-cap-for-private-property-renters",
+ "title_en": "Occupancy Cap for Private Property Renters",
+ "title_my": "",
+ "summary_en": "How many unrelated tenants can legally share a private condo or landed home, and why it matters to you.",
+ "my_approved": false,
+ "body_en": "<p>If you're renting a room in a private condo or landed house, the number of unrelated tenants already living there isn't just a crowding issue — it's a legal limit set by URA.</p><h2>The standard cap</h2><p>Private residential properties are generally subject to an occupancy cap of <b>6 unrelated persons</b> per property. Owners can rent out to up to 6 unrelated people without needing to register this with URA.</p><h2>The temporary higher cap for larger units</h2><p>Owners of larger private residential properties — at least 90 square metres — can apply to register with URA to house up to <b>8 unrelated persons</b> instead. This relaxation has been extended and is currently valid until <b>31 December 2028</b>. Each occupant under this higher cap still needs a minimum stay of 3 consecutive months. After the scheme ends, all private residential properties revert to the standard cap of 6.</p><h2>Why this matters to you as a tenant</h2><ul><li>If you're moving into a room in a flat that already has several other unrelated tenants, ask whether the unit is within the legal cap — an overcrowded, unregistered unit puts your own tenancy at risk if authorities act on it.</li><li>Minimum stay rules apply too — private residential rentals generally require a minimum lease of 3 months, so very short stays aren't meant to work this way.</li><li>Enforcement is real: URA has issued large fines for unauthorised use of private residential units as unofficial dormitory-style housing.</li></ul><h2>A simple question to ask upfront</h2><p>Before you commit, ask how many other tenants are in the unit, and whether the owner has registered for the higher cap if the number is more than 6. A straightforward answer is a good sign; evasiveness is not.</p><p>General guidance, November 2026 — not legal advice. Check the current cap and dates on ura.gov.sg.</p>",
+ "body_my": "",
+ "facts_checked": [
+  {"claim": "Private residential properties are generally capped at 6 unrelated persons per property without needing URA registration", "source": "https://www.ura.gov.sg/Corporate/Property/Residential/Renting-Property"},
+  {"claim": "Owners of private residential properties of at least 90 sqm can register with URA to house up to 8 unrelated persons, each requiring a minimum 3-month stay, under a temporary relaxation extended until 31 December 2028, after which the cap reverts to 6", "source": "https://www.ura.gov.sg/Corporate/Media-Room/Media-Releases/pr26-03"}
+ ]
+}
