@@ -500,6 +500,20 @@ async function submitPost(editId) {
     <button class="cta wide" onclick="closeModal()">Done</button>`;
 }
 
+// ---------- homepage guides strip ----------
+async function loadGuides() {
+  try {
+    const r = await fetch("/blog/latest.json", { cache: "no-cache" });
+    if (!r.ok) return;
+    const posts = (await r.json()).slice(0, 3);
+    if (!posts.length) return;
+    $("#guidesGrid").innerHTML = posts.map((p) =>
+      `<a class="gcard" href="/blog/${encodeURIComponent(p.slug)}.html"><b>${escId(p.title_en)}</b>
+        <span>${escId(p.summary_en)}</span></a>`).join("");
+    $("#guides").hidden = false;
+  } catch (e) {}
+}
+
 // ---------- live data ----------
 async function loadLive() {
   const live = await fetchLiveListings();
@@ -542,4 +556,5 @@ document.addEventListener("DOMContentLoaded", () => {
   render();
   refreshAuth();
   loadLive();
+  loadGuides();
 });

@@ -131,6 +131,23 @@ background:var(--bg);color:var(--fg);border-radius:12px;padding:11px 13px;font:i
 .ck input{width:auto;margin:0}
 .contact a{text-decoration:none;text-align:center;display:block}
 
+/* section tabs + homepage guides */
+.tabs{background:var(--card);border-bottom:1px solid var(--line);
+display:flex;gap:4px;padding:0 12px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{padding:11px 14px;font-weight:700;font-size:.92rem;color:var(--mut);text-decoration:none;
+white-space:nowrap;border-bottom:3px solid transparent}
+.tabs a.on{color:var(--brand);border-bottom-color:var(--brand)}
+.guides{max-width:1080px;margin:0 auto;padding:10px 16px 40px}
+.guides-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.guides-head h2{font-size:1.2rem}
+.guides-head a{color:var(--brand);font-weight:700;text-decoration:none}
+.guides-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.gcard{display:block;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--brand);
+border-radius:14px;padding:14px 16px;text-decoration:none;box-shadow:var(--shadow)}
+.gcard b{display:block;margin-bottom:4px;line-height:1.35}
+.gcard span{color:var(--mut);font-size:.86rem}
+
 /* room offers vs room wanted */
 .kindbar{max-width:1080px;margin:14px auto 0;padding:0 16px;display:flex;flex-wrap:wrap;
 align-items:center;gap:10px 16px}

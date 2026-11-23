@@ -49,6 +49,7 @@ padding:18px;margin:30px 0 0;text-align:center}}
   <div class="grow"></div>
   <a class="cta" href="../" style="text-decoration:none">Find a room</a>
 </header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/" class="on">📖 Guides</a></nav>
 <article class="post">
 <h1>{title}</h1>
 <div class="date">{date} · RoomKaki guides</div>
@@ -92,6 +93,7 @@ padding:16px 18px;margin-bottom:12px;text-decoration:none;box-shadow:var(--shado
   <div class="grow"></div>
   <a class="cta" href="../" style="text-decoration:none">Find a room</a>
 </header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/" class="on">📖 Guides</a></nav>
 <div class="bloglist">
 <h1>Renting guides</h1>
 <p style="color:var(--mut)">Plain-language guides for renting a room in Singapore. New guide every day.</p>
@@ -134,6 +136,11 @@ def build() -> int:
                                       date=p["date"], summary=html.escape(p["summary_en"]))
                      for p in posts)
     (BLOG / "index.html").write_text(INDEX.format(rows=rows, site=SITE), encoding="utf-8")
+
+    # homepage "latest guides" feed
+    (BLOG / "latest.json").write_text(json.dumps(
+        [{"slug": p["slug"], "title_en": p["title_en"], "summary_en": p["summary_en"], "date": p["date"]}
+         for p in posts], ensure_ascii=False, indent=1), encoding="utf-8")
 
     # sitemap: root entry + blog pages (regenerate the blog section idempotently)
     sm = ROOT / "sitemap.xml"

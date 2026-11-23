@@ -20,10 +20,12 @@ def release_one(today: str) -> str | None:
     st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
     if st.get("last_release") == today:
         return None
-    pend = sorted(PENDING.glob("*.json"))
-    if not pend:
+    # only posts whose Burmese Gemini wrote natively are ready (owner rule 11-21); numbers are 3-digit
+    ready = [p for p in sorted(PENDING.glob("*.json"))
+             if json.loads(p.read_text(encoding="utf-8")).get("my_review") == "gemini-native"]
+    if not ready:
         return None
-    pick = pend[0]
+    pick = ready[0]
     post = json.loads(pick.read_text(encoding="utf-8"))
     post["date"] = today
     (POSTS / pick.name).write_text(json.dumps(post, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -34,6 +34,11 @@
   <button class="cta" data-i18n="postRoom" onclick="openPost()">Post a room</button>
 </header>
 
+<nav class="tabs" aria-label="Sections">
+  <a href="/" class="on">🏠 Rooms</a>
+  <a href="/blog/">📖 Guides</a>
+</nav>
+
 <section class="hero">
   <h1 data-i18n="heroTitle">Find a room you can <em>trust</em></h1>
   <p data-i18n="heroSub">Moderated listings · owner-direct rooms · MRT-smart search. Built for Singapore's communities, in your language.</p>
@@ -87,6 +92,14 @@
   <div class="grid" id="grid"></div>
   <div id="map"></div>
 </main>
+
+<section class="guides" id="guides" hidden>
+  <div class="guides-head">
+    <h2>Renting guides</h2>
+    <a href="/blog/">All guides →</a>
+  </div>
+  <div class="guides-grid" id="guidesGrid"></div>
+</section>
 
 <div class="panel" id="panel"><div class="sheet" id="sheet"></div></div>
 

@@ -1,0 +1,802 @@
+[
+  {
+    "n": 15,
+    "slug": "stamp-duty-tenancy-agreement-explained",
+    "title_en": "Stamp Duty on a Tenancy Agreement, Explained",
+    "angle": "What stamp duty is, who pays it, and how to e-stamp your tenancy agreement with IRAS within 14 days.",
+    "audience": "renter",
+    "source": "iras.gov.sg"
+  },
+  {
+    "n": 16,
+    "slug": "renting-out-a-bedroom-hdb-approval-steps",
+    "title_en": "Renting Out a Bedroom: The HDB Approval Steps",
+    "angle": "The exact approval steps an HDB owner must complete with HDB before renting out a bedroom.",
+    "audience": "landlord",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 17,
+    "slug": "thingyan-and-the-april-moving-rush",
+    "title_en": "Thingyan and the April Moving Rush",
+    "angle": "Why many Myanmar renters' leases turn over around Thingyan, and how to plan a move around the holiday.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 18,
+    "slug": "tenancy-agreement-key-clauses-to-read",
+    "title_en": "Key Clauses to Read in Any Room Tenancy Agreement",
+    "angle": "Walk through the clauses every room tenancy agreement should have, in plain English, before you sign.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 19,
+    "slug": "diplomatic-clause-explained",
+    "title_en": "What a Diplomatic Clause in a Tenancy Agreement Actually Does",
+    "angle": "What a diplomatic clause does, when it can be used, and why it protects both tenant and landlord if a job or visa changes suddenly.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 20,
+    "slug": "notice-period-ending-a-room-tenancy",
+    "title_en": "How Much Notice You Must Give to End a Room Tenancy",
+    "angle": "How much notice a tenant must give to move out, and what happens if you leave without giving it.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 21,
+    "slug": "whole-flat-vs-bedroom-rental-which-approval",
+    "title_en": "Whole Flat vs Bedroom Rental: Which HDB Approval You Need",
+    "angle": "Why renting out a whole HDB flat needs different HDB approval from renting out just a bedroom.",
+    "audience": "landlord",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 22,
+    "slug": "early-termination-penalty-what-is-normal",
+    "title_en": "Early Termination Penalties: What Is Normal in Singapore",
+    "angle": "What landlords can and cannot charge a tenant who breaks a lease early, and how to negotiate it before signing.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 23,
+    "slug": "december-january-lease-renewal-rush",
+    "title_en": "The December-January Lease Renewal Rush",
+    "angle": "Why rooms get scarce and pricier in the December–January renewal season, and how to avoid getting caught out.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 24,
+    "slug": "renewing-your-room-tenancy-what-changes",
+    "title_en": "Renewing Your Room Tenancy: What You Should Renegotiate",
+    "angle": "What to check and renegotiate — rent, deposit, term — before signing a renewal instead of letting it roll over.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 25,
+    "slug": "rent-increase-at-renewal-know-your-options",
+    "title_en": "Rent Increase at Renewal: Know Your Options",
+    "angle": "Whether a landlord can raise the rent at renewal, and what a tenant can do if the increase feels unfair.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 26,
+    "slug": "minimum-occupation-period-before-you-can-rent-out",
+    "title_en": "Minimum Occupation Period: When You Can Start Renting Out",
+    "angle": "How the Minimum Occupation Period affects when an HDB owner can start renting out their flat or a room.",
+    "audience": "landlord",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 27,
+    "slug": "small-claims-tribunal-for-tenants",
+    "title_en": "Using the Small Claims Tribunal for a Rental Dispute",
+    "angle": "When a rental dispute is small enough for the Small Claims Tribunal, what it costs, and how the process works.",
+    "audience": "renter",
+    "source": "statecourts.gov.sg"
+  },
+  {
+    "n": 28,
+    "slug": "getting-rent-receipts-and-proof-of-payment",
+    "title_en": "Why You Need Rent Receipts and Proof of Payment",
+    "angle": "Why paying rent by PayNow or bank transfer instead of cash protects you, and what a proper receipt should show.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 29,
+    "slug": "life-near-peninsula-plaza-for-myanmar-renters",
+    "title_en": "Life Near Peninsula Plaza for Myanmar Renters",
+    "angle": "What Peninsula Plaza offers the Myanmar community, and why many still choose to live near it despite rising rents.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 30,
+    "slug": "updating-your-address-with-ica",
+    "title_en": "Updating Your Address with ICA After You Move",
+    "angle": "Why your residential address must match your pass records, and how to update it after you move.",
+    "audience": "renter",
+    "source": "ica.gov.sg"
+  },
+  {
+    "n": 31,
+    "slug": "is-rental-income-taxable-in-singapore",
+    "title_en": "Is Rental Income Taxable in Singapore",
+    "angle": "How IRAS treats room-rental income, and what a landlord must declare and by when.",
+    "audience": "landlord",
+    "source": "iras.gov.sg"
+  },
+  {
+    "n": 32,
+    "slug": "fin-and-pass-address-rules-for-renters",
+    "title_en": "FIN and Pass Address Rules Every Renter Should Know",
+    "angle": "What address rules come with a Work Permit, S Pass, Employment Pass, Student's Pass or Dependant's Pass when you rent a room.",
+    "audience": "renter",
+    "source": "mom.gov.sg"
+  },
+  {
+    "n": 33,
+    "slug": "employment-pass-renting-private-property",
+    "title_en": "Employment Pass Holders Renting Private Property",
+    "angle": "Where Employment Pass and S Pass holders can legally rent, and the difference between a condo room and an HDB room.",
+    "audience": "renter",
+    "source": "mom.gov.sg"
+  },
+  {
+    "n": 34,
+    "slug": "students-pass-holders-renting-a-room",
+    "title_en": "Student's Pass Holders Renting a Room: What to Know",
+    "angle": "What a Student's Pass allows when renting near your school, and who you may need as a guarantor.",
+    "audience": "renter",
+    "source": "ica.gov.sg"
+  },
+  {
+    "n": 35,
+    "slug": "work-permit-holders-and-hdb-rooms",
+    "title_en": "Work Permit Holders and HDB Rooms: What's Allowed",
+    "angle": "Why most Work Permit holders cannot rent an HDB bedroom, and what housing options are actually open to them.",
+    "audience": "renter",
+    "source": "mom.gov.sg"
+  },
+  {
+    "n": 36,
+    "slug": "expenses-you-can-deduct-from-rental-income",
+    "title_en": "Expenses You Can Deduct From Rental Income",
+    "angle": "Which costs — repairs, agent fees, loan interest — a landlord can legally deduct before paying tax on rental income.",
+    "audience": "landlord",
+    "source": "iras.gov.sg"
+  },
+  {
+    "n": 37,
+    "slug": "settling-in-near-boon-lay-and-jurong",
+    "title_en": "Settling In Near Boon Lay and Jurong",
+    "angle": "Transport, shops and temples that make Boon Lay and Jurong popular with Myanmar renters working nearby.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 38,
+    "slug": "opening-a-bank-account-as-a-new-renter",
+    "title_en": "Opening a Bank Account as a New Renter in Singapore",
+    "angle": "What documents a new renter typically needs to open a Singapore bank account to pay rent and bills.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 39,
+    "slug": "setting-up-your-sp-utilities-account",
+    "title_en": "Setting Up Your SP Utilities Account as a Tenant",
+    "angle": "How a tenant sets up electricity, water and gas under their own name with SP Group, step by step.",
+    "audience": "renter",
+    "source": "spgroup.com.sg"
+  },
+  {
+    "n": 40,
+    "slug": "internet-and-wifi-setup-for-a-rented-room",
+    "title_en": "Getting Home Internet Set Up for a Rented Room",
+    "angle": "How to get home broadband installed as a tenant, and what to check before committing to a contract.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 41,
+    "slug": "condo-landlords-mcst-house-rules-for-subletting",
+    "title_en": "Condo Landlords: Check MCST House Rules Before Subletting",
+    "angle": "Why a condo owner should check MCST house rules before taking in a tenant, on top of URA rules.",
+    "audience": "landlord",
+    "source": "ura.gov.sg"
+  },
+  {
+    "n": 42,
+    "slug": "aircon-servicing-who-pays-what",
+    "title_en": "Aircon Servicing: Who Pays for What",
+    "angle": "Whose job it usually is to service and gas-top-up the air-con in a rented room, and how to put it in writing.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 43,
+    "slug": "settling-in-near-woodlands",
+    "title_en": "Settling In Near Woodlands",
+    "angle": "What day-to-day life and commuting look like for Myanmar renters based in Woodlands.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 44,
+    "slug": "who-pays-for-repairs-tenant-or-landlord",
+    "title_en": "Who Pays for Repairs: Tenant or Landlord",
+    "angle": "The usual split between landlord and tenant for repairs, from a leaking tap to a broken lock.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 45,
+    "slug": "pest-infestation-in-a-rented-room-what-to-do",
+    "title_en": "Pest Infestation in a Rented Room: What to Do",
+    "angle": "Steps to take if you find bed bugs or cockroaches, and who is normally responsible for paying to fix it.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 46,
+    "slug": "registering-your-tenant-with-hdb",
+    "title_en": "Registering Your Tenant with HDB",
+    "angle": "How and why an HDB owner must register every tenant's particulars, and what happens if they don't.",
+    "audience": "landlord",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 47,
+    "slug": "key-handover-and-extra-locks",
+    "title_en": "Key Handover and Adding Your Own Lock to a Room",
+    "angle": "What to agree on for keys and access cards, and whether you're allowed to add your own lock to a room door.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 48,
+    "slug": "landlord-entering-your-room-without-notice",
+    "title_en": "Landlord Entering Your Room Without Notice: Your Rights",
+    "angle": "What counts as reasonable notice before a landlord enters a rented room, and what to do if that line is crossed.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 49,
+    "slug": "settling-in-near-yishun",
+    "title_en": "Settling In Near Yishun",
+    "angle": "What day-to-day life and commuting look like for Myanmar renters based in Yishun.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 50,
+    "slug": "roommate-conflict-resolution-steps",
+    "title_en": "Steps to Resolve a Roommate Conflict Before It Escalates",
+    "angle": "A practical way to raise and settle common roommate problems — mess, noise, bills — before they become a tenancy dispute.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 51,
+    "slug": "occupancy-cap-how-many-tenants-you-can-legally-house",
+    "title_en": "Occupancy Cap: How Many Tenants You Can Legally House",
+    "angle": "The maximum number of unrelated tenants a landlord can legally house, and the registration needed to go higher.",
+    "audience": "landlord",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 52,
+    "slug": "guarantor-requirements-for-foreign-tenants",
+    "title_en": "Guarantor Requirements for Foreign Tenants",
+    "angle": "When a landlord can ask for a local guarantor, and what being a guarantor actually commits someone to.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 53,
+    "slug": "renting-as-an-unmarried-couple",
+    "title_en": "Renting a Room as an Unmarried Couple in Singapore",
+    "angle": "What Singapore rental practice does and doesn't say about unmarried couples renting a room together.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 54,
+    "slug": "renting-with-children-what-to-check",
+    "title_en": "Renting a Room with Children: What to Check",
+    "angle": "Extra things a family should check in a room tenancy — space, school distance, house rules on children.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 55,
+    "slug": "breaking-a-lease-to-return-to-myanmar",
+    "title_en": "Breaking a Lease to Return to Myanmar Suddenly",
+    "angle": "How to exit a tenancy early if you need to fly home suddenly, and what it will likely cost you.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 56,
+    "slug": "writing-a-tenancy-agreement-landlords-checklist",
+    "title_en": "Writing a Tenancy Agreement: A Landlord's Checklist",
+    "angle": "The clauses a landlord should never leave out of a room tenancy agreement.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 57,
+    "slug": "cost-of-living-budget-for-a-room-renter",
+    "title_en": "A Cost-of-Living Budget for a Room Renter",
+    "angle": "A realistic monthly budget breakdown — rent, food, transport, remittance — for someone renting a room in Singapore.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 58,
+    "slug": "subletting-your-rented-room-is-it-allowed",
+    "title_en": "Subletting Your Rented Room: Is It Allowed",
+    "angle": "Why a tenant usually cannot sublet or re-rent their room without the landlord's and HDB's written approval.",
+    "audience": "renter",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 59,
+    "slug": "visitors-and-overnight-guests-house-rules",
+    "title_en": "Visitors and Overnight Guests: Typical House Rules",
+    "angle": "Typical house rules on visitors and overnight guests, and why ignoring them can end a tenancy.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 60,
+    "slug": "noise-complaints-and-town-council-rules",
+    "title_en": "Noise Complaints and Town Council Rules for Tenants",
+    "angle": "What counts as an actionable noise complaint in HDB living, and who a tenant should raise it with first.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 61,
+    "slug": "setting-a-fair-security-deposit",
+    "title_en": "Setting a Fair Security Deposit for a Room Rental",
+    "angle": "What deposit amount is standard practice for room rentals, and how to justify it if a tenant pushes back.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 62,
+    "slug": "cooking-smells-and-shared-kitchen-rules",
+    "title_en": "Cooking Smells and Shared Kitchen Rules That Work",
+    "angle": "Fair ways to share a kitchen — cooking times, smell, cleaning — in a multi-tenant flat.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 63,
+    "slug": "getting-a-sim-card-as-a-new-arrival",
+    "title_en": "Getting a SIM Card as a New Arrival",
+    "angle": "What ID and address proof you need to register a Singapore SIM card after you move in.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 64,
+    "slug": "bathroom-and-cleaning-schedules-that-work",
+    "title_en": "Bathroom and Cleaning Schedules That Actually Work",
+    "angle": "Simple rota systems that stop bathroom and cleaning arguments in a shared flat.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 65,
+    "slug": "pets-in-a-rented-hdb-or-condo-room",
+    "title_en": "Pets in a Rented HDB or Condo Room: What's Allowed",
+    "angle": "What pet rules actually apply to a rented HDB or condo unit, and where to check before bringing a pet.",
+    "audience": "renter",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 66,
+    "slug": "screening-a-prospective-tenant",
+    "title_en": "Screening a Prospective Tenant the Right Way",
+    "angle": "Reasonable checks a landlord can run on a prospective tenant — pass validity, references — without crossing into discrimination.",
+    "audience": "landlord",
+    "source": "mom.gov.sg"
+  },
+  {
+    "n": 67,
+    "slug": "smoking-rules-in-shared-flats",
+    "title_en": "Smoking Rules in Shared Flats and HDB Common Areas",
+    "angle": "Where smoking is and isn't allowed in HDB common areas and inside a unit, and the fines for breaking it.",
+    "audience": "renter",
+    "source": "nea.gov.sg"
+  },
+  {
+    "n": 68,
+    "slug": "bicycle-and-pmd-parking-for-tenants",
+    "title_en": "Bicycle and PMD Parking Rules for Tenants",
+    "angle": "Where a tenant can legally park a bicycle or PMD at an HDB block, and the rules that apply.",
+    "audience": "renter",
+    "source": "lta.gov.sg"
+  },
+  {
+    "n": 69,
+    "slug": "registering-your-child-for-school-after-moving",
+    "title_en": "Registering Your Child for School After Moving",
+    "angle": "How a change of home address affects school registration for a child living with you in Singapore.",
+    "audience": "both",
+    "source": "moe.gov.sg"
+  },
+  {
+    "n": 70,
+    "slug": "renters-contents-insurance-is-it-worth-it",
+    "title_en": "Renter's Contents Insurance: Is It Worth It",
+    "angle": "What a renter's contents insurance policy actually covers, and when it's worth the premium.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 71,
+    "slug": "non-paying-tenant-your-legal-options",
+    "title_en": "Non-Paying Tenant: Your Legal Options as a Landlord",
+    "angle": "The legal steps available to a landlord when a tenant stops paying rent, from notice to the Small Claims Tribunal.",
+    "audience": "landlord",
+    "source": "statecourts.gov.sg"
+  },
+  {
+    "n": 72,
+    "slug": "landlord-selling-the-flat-what-happens-to-you",
+    "title_en": "Landlord Selling the Flat: What Happens to Your Tenancy",
+    "angle": "What happens to an existing tenancy if the landlord sells the flat partway through your lease.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 73,
+    "slug": "landlord-passes-away-or-goes-bankrupt",
+    "title_en": "If Your Landlord Passes Away or Goes Bankrupt",
+    "angle": "What protection a tenancy agreement gives you if the landlord dies or is declared bankrupt mid-lease.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 74,
+    "slug": "security-deposit-deductions-what-is-allowed",
+    "title_en": "Security Deposit Deductions: What Is Allowed",
+    "angle": "What a landlord can and cannot fairly deduct from your deposit, and where to go if the deduction seems too high.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 75,
+    "slug": "translating-your-tenancy-agreement",
+    "title_en": "Translating Your Tenancy Agreement into Burmese",
+    "angle": "Why an English-only agreement is still binding, and how to get a reliable Burmese translation before you sign.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 76,
+    "slug": "ending-a-tenancy-early-landlords-side",
+    "title_en": "Ending a Tenancy Early: A Landlord's Side",
+    "angle": "What a landlord must do, and can't do, to end a room tenancy before the agreed term is up.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 77,
+    "slug": "updating-your-details-with-the-myanmar-embassy",
+    "title_en": "Updating Your Details with the Myanmar Embassy",
+    "angle": "Why renters should keep their Singapore address updated with the Myanmar Embassy, and how to do it.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 78,
+    "slug": "as-is-condition-clause-what-it-really-means",
+    "title_en": "An 'As Is' Condition Clause: What It Really Means",
+    "angle": "What signing a room 'as is' commits you to, and what it does not let a landlord off the hook for.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 79,
+    "slug": "finding-a-room-in-under-a-week",
+    "title_en": "Finding a Room in Under a Week: A Realistic Plan",
+    "angle": "A realistic plan for renters who need to move fast — what to prioritise when time is short.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 80,
+    "slug": "renting-during-school-term-vs-holidays",
+    "title_en": "Renting During School Term vs School Holidays",
+    "angle": "Why room supply and prices shift between school term and semester break, and how to time your search.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 81,
+    "slug": "should-you-use-a-property-agent-to-rent-out-a-room",
+    "title_en": "Should You Use a Property Agent to Rent Out a Room",
+    "angle": "What a CEA-registered agent costs a landlord, and what they take off your plate in return.",
+    "audience": "landlord",
+    "source": "cea.gov.sg"
+  },
+  {
+    "n": 82,
+    "slug": "short-term-stays-what-is-actually-legal",
+    "title_en": "Short-Term Room Stays: What Is Actually Legal",
+    "angle": "Why daily or weekly room rentals are illegal in Singapore, and what legal short-stay options exist instead.",
+    "audience": "renter",
+    "source": "ura.gov.sg"
+  },
+  {
+    "n": 83,
+    "slug": "public-holidays-and-rent-due-dates",
+    "title_en": "Public Holidays and Rent Due Dates",
+    "angle": "What to do when your rent due date falls on a public holiday or during a long trip home.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 84,
+    "slug": "water-leak-disputes-between-tenant-and-landlord",
+    "title_en": "Water Leak Disputes Between Tenant and Landlord",
+    "angle": "How to document a leak and work out who pays, before it turns into a bigger dispute.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 85,
+    "slug": "lost-keys-and-lockout-costs",
+    "title_en": "Lost Keys and Lockout Costs: Who Pays",
+    "angle": "Who usually pays when a tenant loses a key or gets locked out, and how to agree this upfront.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 86,
+    "slug": "landlord-insurance-for-a-rented-out-room",
+    "title_en": "Landlord Insurance for a Rented-Out Room",
+    "angle": "What a home or landlord insurance policy typically covers once you start renting out part of your flat.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 87,
+    "slug": "cctv-in-shared-common-areas-is-it-legal",
+    "title_en": "CCTV in Shared Common Areas: Is It Legal",
+    "angle": "What landlords can and can't record with CCTV in a shared flat, and a tenant's privacy rights.",
+    "audience": "renter",
+    "source": "pdpc.gov.sg"
+  },
+  {
+    "n": 88,
+    "slug": "harassment-by-a-landlord-what-you-can-do",
+    "title_en": "Harassment by a Landlord: What You Can Do",
+    "angle": "What counts as landlord harassment, and the official channels a tenant can escalate to.",
+    "audience": "renter",
+    "source": "police.gov.sg"
+  },
+  {
+    "n": 89,
+    "slug": "using-paynow-and-bank-transfers-for-rent",
+    "title_en": "Using PayNow and Bank Transfers for Rent",
+    "angle": "Why PayNow or bank transfer is safer than cash for paying rent, and how to set it up.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 90,
+    "slug": "income-proof-needed-to-rent-a-room",
+    "title_en": "Income Proof Landlords May Ask For Before Renting to You",
+    "angle": "What proof of income or employment landlords commonly ask for, and what's reasonable to share.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 91,
+    "slug": "utilities-account-in-your-name-or-the-tenants",
+    "title_en": "Utilities Account: In Your Name or the Tenant's",
+    "angle": "The pros, cons and deposit implications of keeping the SP utilities account under the landlord's name.",
+    "audience": "landlord",
+    "source": "spgroup.com.sg"
+  },
+  {
+    "n": 92,
+    "slug": "co-renting-with-friends-vs-strangers",
+    "title_en": "Co-Renting with Friends vs Renting with Strangers",
+    "angle": "What to put in writing when you and friends rent together, so the friendship survives the tenancy.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 93,
+    "slug": "master-bedroom-vs-common-room-tradeoffs",
+    "title_en": "Master Bedroom vs Common Room: The Real Trade-Offs",
+    "angle": "The real differences in price, privacy and house rules between a master room and a common room.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 94,
+    "slug": "checking-if-your-landlord-actually-owns-the-flat",
+    "title_en": "Checking If Your Landlord Actually Owns the Flat",
+    "angle": "How to verify, before paying anything, that the person renting to you is the real owner or an authorised tenant.",
+    "audience": "renter",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 95,
+    "slug": "verifying-a-property-agent-before-paying-a-fee",
+    "title_en": "Verifying a Property Agent Before You Pay Any Fee",
+    "angle": "How to check an agent's CEA registration number on the public register before paying any commission.",
+    "audience": "renter",
+    "source": "cea.gov.sg"
+  },
+  {
+    "n": 96,
+    "slug": "house-rules-document-template-for-landlords",
+    "title_en": "A House Rules Document Every Landlord Should Write",
+    "angle": "Why a written house-rules document prevents most shared-flat disputes before they start.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 97,
+    "slug": "choosing-a-moving-company-or-lorry-for-a-room-move",
+    "title_en": "Choosing a Moving Company or Lorry for a Room Move",
+    "angle": "What to check before booking a mover or lorry for a room-to-room move, and typical costs.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 98,
+    "slug": "do-you-need-an-agent-to-rent-a-room",
+    "title_en": "Do You Need an Agent to Rent a Room",
+    "angle": "What a property agent actually does for a room rental, typical fees, and when you can skip one.",
+    "audience": "renter",
+    "source": "cea.gov.sg"
+  },
+  {
+    "n": 99,
+    "slug": "reporting-a-rental-scam-step-by-step",
+    "title_en": "Reporting a Rental Scam: Step by Step",
+    "angle": "What to do in the first hour after sending money to a rental scammer — reports, banks, evidence.",
+    "audience": "renter",
+    "source": "police.gov.sg"
+  },
+  {
+    "n": 100,
+    "slug": "remitting-rent-savings-back-to-myanmar",
+    "title_en": "Remitting Your Rent Savings Back to Myanmar Safely",
+    "angle": "What licensed remittance options exist to send money home, and how to check a service is MAS-regulated.",
+    "audience": "renter",
+    "source": "mas.gov.sg"
+  },
+  {
+    "n": 101,
+    "slug": "renting-to-tenants-of-different-nationalities-fairly",
+    "title_en": "Renting to Tenants of Different Nationalities, Fairly",
+    "angle": "What fair and lawful tenant selection looks like, and where discrimination complaints can be raised.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 102,
+    "slug": "budgeting-rent-against-your-salary",
+    "title_en": "Budgeting Rent Against Your Salary: A Simple Rule",
+    "angle": "A simple rule of thumb for how much of your pay should go to rent in Singapore, and why.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 103,
+    "slug": "buddhist-temples-and-community-spaces-near-popular-areas",
+    "title_en": "Buddhist Temples and Community Spaces Worth Knowing",
+    "angle": "Temples and community spaces that matter to many Myanmar renters when picking a neighbourhood.",
+    "audience": "both",
+    "source": "general"
+  },
+  {
+    "n": 104,
+    "slug": "registering-with-a-polyclinic-near-your-room",
+    "title_en": "Registering with a Polyclinic Near Your Room",
+    "angle": "Why your home address matters for subsidised healthcare, and how to register at a nearby polyclinic.",
+    "audience": "renter",
+    "source": "moh.gov.sg"
+  },
+  {
+    "n": 105,
+    "slug": "mail-and-registered-address-for-renters",
+    "title_en": "Mail and a Registered Address When You're Renting",
+    "angle": "Why some renters struggle to receive mail and parcels, and simple fixes for a shared address.",
+    "audience": "renter",
+    "source": "general"
+  },
+  {
+    "n": 106,
+    "slug": "what-happens-if-a-tenant-sublets-without-permission",
+    "title_en": "What Happens If a Tenant Sublets Without Permission",
+    "angle": "The HDB and legal consequences for a landlord if a tenant illegally sublets or re-rents the room.",
+    "audience": "landlord",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 107,
+    "slug": "fire-safety-basics-for-shared-flats",
+    "title_en": "Fire Safety Basics for a Shared Rented Flat",
+    "angle": "Basic fire safety habits for a shared rented flat, and what actually counts as a fire-code violation.",
+    "audience": "renter",
+    "source": "scdf.gov.sg"
+  },
+  {
+    "n": 108,
+    "slug": "ending-a-tenancy-when-you-change-jobs",
+    "title_en": "Ending a Tenancy When You Change Jobs",
+    "angle": "What changing employers or losing your work pass means for an existing room tenancy.",
+    "audience": "renter",
+    "source": "mom.gov.sg"
+  },
+  {
+    "n": 109,
+    "slug": "healthcare-access-for-work-pass-holders-renting-a-room",
+    "title_en": "Healthcare Access for Work Pass Holders Renting a Room",
+    "angle": "What healthcare cover a work-pass holder renting a room should have in place, and why it matters.",
+    "audience": "both",
+    "source": "mom.gov.sg"
+  },
+  {
+    "n": 110,
+    "slug": "confirming-you-are-an-approved-hdb-tenant",
+    "title_en": "Confirming You Are an Approved HDB Tenant",
+    "angle": "Why being on HDB's approved tenant list protects you, and how to check or ask your landlord to register you.",
+    "audience": "renter",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 111,
+    "slug": "documenting-room-condition-at-handover-landlords-protection",
+    "title_en": "Documenting Room Condition at Handover: A Landlord's Protection",
+    "angle": "Why a timestamped photo record at move-in is a landlord's best protection in a deposit dispute.",
+    "audience": "landlord",
+    "source": "general"
+  },
+  {
+    "n": 112,
+    "slug": "occupancy-cap-for-private-property-renters",
+    "title_en": "Occupancy Cap for Private Property Renters",
+    "angle": "How many unrelated tenants can legally share a private condo or landed home, and why it matters to you.",
+    "audience": "renter",
+    "source": "ura.gov.sg"
+  },
+  {
+    "n": 113,
+    "slug": "long-term-visit-pass-holders-renting-a-room",
+    "title_en": "Long-Term Visit Pass Holders Renting a Room",
+    "angle": "Whether Long-Term Visit Pass or Dependant's Pass holders can rent an HDB room, and what the rules actually say.",
+    "audience": "renter",
+    "source": "hdb.gov.sg"
+  },
+  {
+    "n": 114,
+    "slug": "what-a-letter-of-intent-means-before-you-sign",
+    "title_en": "What a Letter of Intent Means Before You Sign",
+    "angle": "What signing a Letter of Intent and paying a holding deposit commits you to, before the full agreement is signed.",
+    "audience": "renter",
+    "source": "general"
+  }
+]
