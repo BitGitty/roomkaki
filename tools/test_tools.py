@@ -85,6 +85,16 @@ async def main():
         await pg.click("#make")
         h = await pg.inner_html("#doc"); check("&lt;img" in h and "<img src=x" not in h, "Agreement: user text is escaped (no XSS)", h[:120])
 
+        await pg.goto(u + "commute.html")
+        await pg.wait_for_function("document.getElementById('stations').options.length > 100")
+        await fill(pg, "#from", "boonlay"); await fill(pg, "#to", "Raffles Place")
+        t = await pg.inner_text("#out")
+        check("No line change" in t and "13 stops" in t and "29 min" in t, "Commute: Boon Lay → Raffles Place = EW direct, 13 stops, ≈29 min", t)
+        await fill(pg, "#from", "Woodlands"); await fill(pg, "#to", "Bugis")
+        t = await pg.inner_text("#out"); check("line change" in t and "min" in t, "Commute: Woodlands → Bugis needs a line change", t)
+        await fill(pg, "#from", "Bishan"); await fill(pg, "#to", "Bishan")
+        t = await pg.inner_text("#out"); check("Same station" in t, "Commute: same station handled", t)
+
         await pg.goto(u)
         n = await pg.eval_on_selector_all(".toolcard", "c => c.length")
         check(n >= 9, "Tools index lists the built tools", n)

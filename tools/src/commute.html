@@ -1,0 +1,73 @@
+<div class="panelbox">
+  <label class="fld" for="from">MRT station near the room</label>
+  <input id="from" list="stations" placeholder="e.g. Boon Lay" autocomplete="off">
+  <label class="fld" for="to">MRT station near your work</label>
+  <input id="to" list="stations" placeholder="e.g. Raffles Place" autocomplete="off">
+  <datalist id="stations"></datalist>
+  <div class="result" id="out" hidden></div>
+  <p class="note" id="src">Estimate only: about 2 minutes per stop plus 5 minutes per line change, train time only — add your walk to and
+  from the stations and waiting time at peak hours. Station list: operational MRT network, November 2026 (LTA).</p>
+</div>
+<script>
+let NET = null;
+const $id = (i) => document.getElementById(i);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const key = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+fetch("/tools/data/mrt.json").then((r) => r.json()).then((d) => {
+  NET = { per: d.travel_min_per_stop, xfer: d.transfer_min, adj: {}, color: {}, lname: {}, names: {} };
+  const all = Object.assign({}, d.lines, d.branches);
+  for (const [code, ln] of Object.entries(all)) {
+    const fam = code === "CG" ? "EW" : code === "CE" ? "CC" : code;     // branches belong to their parent line
+    NET.color[fam] = ln.color; NET.lname[fam] = NET.lname[fam] || ln.name;
+    ln.stations.forEach((s, i) => {
+      NET.names[key(s)] = s;
+      if (i > 0) link(ln.stations[i - 1], s, fam);
+    });
+  }
+  (d.extra_edges || []).forEach(([a, b, l]) => link(a, b, l));
+  $id("stations").innerHTML = Object.values(NET.names).sort().map((s) => `<option value="${esc(s)}">`).join("");
+  calc();
+});
+function link(a, b, line) {
+  (NET.adj[a] = NET.adj[a] || []).push([b, line]);
+  (NET.adj[b] = NET.adj[b] || []).push([a, line]);
+}
+function route(a, b) {          // Dijkstra over (station, line) — cost: per stop, plus a transfer penalty on line change
+  const dist = new Map(), prev = new Map(), pq = [];
+  for (const [nb, ln] of NET.adj[a] || []) { /* seed every line through a */ pq.push([0, a, ln]); dist.set(a + "|" + ln, 0); }
+  while (pq.length) {
+    pq.sort((x, y) => x[0] - y[0]);
+    const [d, s, ln] = pq.shift();
+    if (d > dist.get(s + "|" + ln)) continue;
+    if (s === b) { const path = [[s, ln]]; let k = s + "|" + ln; while (prev.has(k)) { k = prev.get(k); path.unshift(k.split("|")); } return { d, path }; }
+    for (const [nb, l2] of NET.adj[s] || []) {
+      const nd = d + NET.per + (l2 !== ln ? NET.xfer : 0), k2 = nb + "|" + l2;
+      if (nd < (dist.has(k2) ? dist.get(k2) : Infinity)) { dist.set(k2, nd); prev.set(k2, s + "|" + ln); pq.push([nd, nb, l2]); }
+    }
+  }
+  return null;
+}
+function calc() {
+  const out = $id("out");
+  if (!NET) return;
+  const a = NET.names[key($id("from").value)], b = NET.names[key($id("to").value)];
+  if (!a || !b) { out.hidden = true; return; }
+  out.hidden = false;
+  if (a === b) { out.innerHTML = `<div class="big">Same station</div><p>Walking distance — no train needed.</p>`; return; }
+  const r = route(a, b);
+  if (!r) { out.innerHTML = `<div class="big">No route found</div>`; return; }
+  const legs = [];                                   // group consecutive stops on the same line
+  for (let i = 1; i < r.path.length; i++) {
+    const [s, l] = r.path[i];
+    if (!legs.length || legs[legs.length - 1].l !== l) legs.push({ l, from: r.path[i - 1][0], to: s, stops: 1 });
+    else { legs[legs.length - 1].to = s; legs[legs.length - 1].stops++; }
+  }
+  const mins = Math.round(legs.reduce((t, g) => t + g.stops, 0) * NET.per + (legs.length - 1) * NET.xfer);
+  out.innerHTML = `<div class="big">≈ ${mins} min</div>
+    <p>${legs.length - 1 === 0 ? "No line change" : `${legs.length - 1} line change${legs.length > 2 ? "s" : ""}`} · ${legs.reduce((t, g) => t + g.stops, 0)} stops</p>
+    <table class="tt">${legs.map((g) => `<tr><td><span class="chipline" style="background:${NET.color[g.l]}">${esc(g.l)}</span></td>
+      <td>${esc(g.from)} → ${esc(g.to)}</td><td>${g.stops} stop${g.stops > 1 ? "s" : ""}</td></tr>`).join("")}</table>`;
+}
+["from", "to"].forEach((i) => $id(i).addEventListener("input", calc));
+</script>

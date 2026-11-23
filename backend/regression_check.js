@@ -55,6 +55,14 @@ MARKET = sgMarket; LINES = { EW: { name: "East West", color: "#009645" } };
 assert(/enforce_active_market/.test(require("fs").readFileSync(require("path").join(__dirname, "multi_market.sql"), "utf8")),
        "DB refuses posts into switched-off markets");
 
+// Search (2026-11-23): multi-word any order, space-insensitive, room type + station covered
+const sr = { ...hostile, title: "Bright room near the MRT", area: "Jurong West", station: "Boon Lay", type: "Common room", desc: "aircon" };
+assert(matchesQuery(sr, "boon lay common"), "Search: multi-word phrase in any order");
+assert(matchesQuery(sr, "boonlay"), "Search: 'boonlay' finds 'Boon Lay'");
+assert(matchesQuery(sr, "COMMON jurong"), "Search: case-insensitive, room type matched");
+assert(!matchesQuery(sr, "woodlands"), "Search: non-matching word excluded");
+assert(matchesQuery(sr, ""), "Search: empty query matches all");
+
 // C6: phone sanitization pattern exists in reveal flow
 assert(/replace\(\/\[\^0-9\+ \]\/g/.test(app), "C6 phone sanitized before tel/wa render");
 

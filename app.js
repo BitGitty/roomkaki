@@ -18,6 +18,20 @@ const money = (n) => `${MARKET.ui.symbol}${(+n || 0).toLocaleString("en")}`;
 const hasTransit = () => typeof LINES !== "undefined" && Object.keys(LINES).length > 0;
 const norm = (s) => String(s || "").normalize("NFC").toLowerCase();  // Burmese must match via NFC
 
+// Search: every word must match somewhere (any order); spaces/punctuation ignored inside words so
+// "boonlay" finds "Boon Lay"; covers title, Burmese title, area, station, line name, room type, preference, description.
+const squash = (s) => norm(s).replace(/[\s\-_.,/'’()]+/g, "");
+function searchText(r) {
+  const line = (typeof LINES !== "undefined" && LINES[r.line]) ? LINES[r.line].name : "";
+  return `${r.title} ${r.my || ""} ${r.area} ${r.station} ${line} ${r.type} ${r.gender} ${r.desc || ""}`;
+}
+function matchesQuery(r, q) {
+  const words = norm(q).split(/[\s,]+/).filter((w) => w.length > 0);
+  if (!words.length) return true;
+  const hay = norm(searchText(r)), hayS = squash(searchText(r));
+  return words.every((w) => hay.includes(w) || hayS.includes(squash(w)));
+}
+
 // ---------- i18n (EN / Burmese) ----------
 const I18N = {
   heroTitle: { en: "Find a room you can <em>trust</em>", my: "ယုံကြည်လို့ရတဲ့ <em>အခန်း</em> ရှာပါ" },
@@ -75,7 +89,7 @@ function filtered() {
     (state.gender === "All" || r.gender === state.gender || r.gender === "Any") &&
     (!state.ownerOnly || r.owner) &&
     (state.maxPrice >= (MARKET.ui.price_max || 3000) || r.price <= state.maxPrice) &&
-    (state.q === "" || norm(`${r.title} ${r.my || ""} ${r.area} ${r.station} ${r.desc || ""}`).includes(norm(state.q)))
+    matchesQuery(r, state.q)
   );
 }
 
@@ -143,7 +157,10 @@ function render() {
         <p style="color:var(--mut);margin:0 0 18px">အခန်းငှားစရာရှိပါသလား? အခမဲ့တင်နိုင်ပါပြီ — ပထမဆုံးတင်သူများထဲက တစ်ယောက်ဖြစ်လိုက်ပါ။</p>
         <button class="cta" onclick="openPost()">Post a room — free</button>
       </div>`
-    : '<p style="grid-column:1/-1;text-align:center;color:var(--mut);padding:40px">No rooms match — try widening the filters.</p>');
+    : `<div style="grid-column:1/-1;text-align:center;color:var(--mut);padding:40px">
+        <p style="margin:0 0 12px">No rooms match${state.q ? ` “${escId(state.q)}”` : ""} — try fewer words or wider filters.</p>
+        ${state.q ? `<button class="ghost" onclick="clearSearch()">Clear search</button>` : ""}
+        <button class="cta" onclick="openPost(null,'wanted')">Post what you're looking for</button></div>`);
   if (state.view === "map") renderMap(list);
 }
 
@@ -161,6 +178,8 @@ function renderMap(list) {
         <a href="#" onclick="openSheet(${r.id});return false">View room →</a>`));
   if (pts.length) map.fitBounds(pts.map((r) => [r.lat, r.lng]), { padding: [40, 40], maxZoom: 14 });
 }
+
+function clearSearch() { state.q = ""; $("#q").value = ""; render(); }
 
 function setKind(k) {
   state.kind = k;
@@ -344,6 +363,9 @@ async function openPost(existing, kind) {
   const T = hasTransit();
   const tw = MARKET.ui.transit_word || "transport";
   const sym = MARKET.ui.symbol;
+  const PH = Object.assign({ ph_station: "Boon Lay", ph_area: "Jurong West", ph_title: "Bright common room, 6 min to Boon Lay MRT",
+    ph_title_wanted: "Working lady looking for common room near Jurong East", ph_phone: "+65 9xxx xxxx" },
+    MARKET.id === "sg" ? {} : (MARKET.ui.copy || {}));
   const lineOpts = T ? Object.entries(LINES).map(([c, v]) => `<option value="${escId(c)}">${escId(v.name)}</option>`).join("") : "";
   const propOpts = (MARKET.ui.property_types || []).map(([v, l]) => `<option value="${escId(v)}">${escId(l)}</option>`).join("");
   const typeOpts = `<option value="common">Common room</option><option value="single">Single room</option>
@@ -359,17 +381,17 @@ async function openPost(existing, kind) {
       <label>${W ? "Room you want" : "Room type"}<select id="f_type">${typeOpts}</select></label>
       <label>${W ? `Budget ${sym}/month` : `Rent ${sym}/month`}<input id="f_price" type="number" min="1" placeholder="${W ? "700" : "850"}"></label>
       ${T ? `<label>${W ? `Preferred ${tw} line` : `${tw} line`}<select id="f_line">${lineOpts}</select></label>
-      <label>${W ? `Near which ${tw}` : `Nearest ${tw}`}<input id="f_station" placeholder="Boon Lay"></label>
+      <label>${W ? `Near which ${tw}` : `Nearest ${tw}`}<input id="f_station" placeholder="${escId(PH.ph_station || "")}"></label>
       ${W ? "" : `<label>Walk (min)<input id="f_walk" type="number" min="1" max="30" placeholder="6"></label>`}` : ""}
-      <label>${W ? "Preferred area" : "Area"}<input id="f_area" placeholder="Jurong West"></label>
+      <label>${W ? "Preferred area" : "Area"}<input id="f_area" placeholder="${escId(PH.ph_area)}"></label>
       <label>${W ? "Who is moving in" : "Preference"}<select id="f_gender">
         <option value="any">${W ? "Prefer not to say" : "Anyone"}</option><option value="female">${W ? "Female" : "Female only"}</option>
         <option value="male">${W ? "Male" : "Male only"}</option></select></label>
       ${W || !propOpts ? "" : `<label>Property<select id="f_hdb">${propOpts}</select></label>`}
     </div>
-    <label class="full">Title<input id="f_title" maxlength="80" placeholder="${W ? "Working lady looking for common room near Jurong East" : "Bright common room, 6 min to Boon Lay MRT"}"></label>
+    <label class="full">Title<input id="f_title" maxlength="80" placeholder="${escId(W ? PH.ph_title_wanted : PH.ph_title)}"></label>
     <label class="full">Description<textarea id="f_desc" rows="3" placeholder="${W ? "When you need it, how long you'll stay, your job, any needs…" : "Furnished, aircon, cooking allowed, available now…"}"></textarea></label>
-    <label class="full">Your WhatsApp / phone<input id="f_phone" placeholder="+65 9xxx xxxx"></label>
+    <label class="full">Your WhatsApp / phone<input id="f_phone" placeholder="${escId(PH.ph_phone)}"></label>
     ${W ? "" : `<label class="full">Photos (up to 6 — first is the cover)<input id="f_photos" type="file" accept="image/*" multiple></label>`}
     <div class="checks">
       ${W ? "" : `<label class="ck"><input id="f_owner" type="checkbox" checked> I'm the owner (not an agent)</label>`}
@@ -559,6 +581,21 @@ function applyMarketUI() {
       location.href = `/?market=${encodeURIComponent(e.target.value)}`;
     };
   }
+  // country-specific wording: Singapore keeps the built-in (owner-approved) text; other markets use their own copy
+  const c = MARKET.ui.copy;
+  if (MARKET.id !== "sg" && c) {
+    I18N.heroSub = { en: c.hero_sub_en, my: c.hero_sub_my || c.hero_sub_en };
+    I18N.searchPh = { en: c.search_ph_en, my: c.search_ph_my || c.search_ph_en };
+    I18N.safetyFoot = { en: c.safety_en, my: c.safety_my || c.safety_en };
+    const sub = document.querySelector(".logo span");
+    if (sub && c.logo_sub) sub.textContent = c.logo_sub;
+    document.title = `RoomKaki — find a room you can trust · ${MARKET.name}`;
+    // guides + tools are written for Singapore law — don't show them as if they apply elsewhere
+    document.querySelectorAll('a[href="/blog/"], a[href="/tools/"], #guides').forEach((el) => {
+      const p = el.closest("p"); (p && !el.closest("nav") ? p : el).hidden = true;
+    });
+    applyLang();
+  }
   if (PREVIEW) {
     const b = document.createElement("div");
     b.className = "previewbar";
@@ -574,6 +611,7 @@ async function loadGuides() {
     if (!r.ok) return;
     const posts = (await r.json()).slice(0, 3);
     if (!posts.length) return;
+    if (MARKET.id !== "sg") return;   // guides are Singapore-specific
     $("#guidesGrid").innerHTML = posts.map((p) =>
       `<a class="gcard" href="/blog/${encodeURIComponent(p.slug)}.html"><b>${escId(p.title_en)}</b>
         <span>${escId(p.summary_en)}</span></a>`).join("");
@@ -601,7 +639,18 @@ async function loadLive() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  $("#q").addEventListener("input", (e) => { state.q = e.target.value; render(); });
+  let qTimer;
+  $("#q").addEventListener("input", (e) => {          // live filter, debounced so typing stays smooth
+    clearTimeout(qTimer);
+    qTimer = setTimeout(() => { state.q = e.target.value; render(); }, 150);
+  });
+  $("#searchForm").addEventListener("submit", () => {  // Enter / Search button: apply now, jump to results
+    state.q = $("#q").value; render();
+    if (state.q) track(`/ev/search/${encodeURIComponent(state.q.slice(0, 40))}`);
+    $(".viewbar").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  const q0 = new URLSearchParams(location.search).get("q");   // Google sitelinks search box: /?q=...
+  if (q0) { $("#q").value = q0; state.q = q0; }
   $("#price").addEventListener("input", (e) => {
     state.maxPrice = +e.target.value;
     $("#priceLabel").textContent = state.maxPrice >= (MARKET.ui.price_max || 3000) ? "Any price" : `≤ ${money(e.target.value)}`;
