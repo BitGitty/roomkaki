@@ -63,6 +63,11 @@ assert(matchesQuery(sr, "COMMON jurong"), "Search: case-insensitive, room type m
 assert(!matchesQuery(sr, "woodlands"), "Search: non-matching word excluded");
 assert(matchesQuery(sr, ""), "Search: empty query matches all");
 
+// No unverifiable "verified" claims in any public text (llms.txt kept one after the C23 fix, 2026-11-23)
+const pub = ["index.html", "llms.txt"].map((f) => fs.readFileSync(path.join(root, f), "utf8")).join("\n");
+assert(!/every poster is verified|verified posters?\b(?! only)|all posters (are )?verified/i.test(pub),
+       "No 'verified posters' claim in index.html / llms.txt");
+
 // C6: phone sanitization pattern exists in reveal flow
 assert(/replace\(\/\[\^0-9\+ \]\/g/.test(app), "C6 phone sanitized before tel/wa render");
 
