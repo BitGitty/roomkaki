@@ -43,7 +43,7 @@ HEAD = """<!DOCTYPE html>
   <div class="grow"></div>
   <a class="cta" href="/" style="text-decoration:none">Find a room</a>
 </header>
-<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a><a href="/market/">📊 Market</a></nav>
 <main class="tool">
 """
 

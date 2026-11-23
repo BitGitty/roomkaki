@@ -1,0 +1,26 @@
+name: market-data
+# Monthly refresh of /market from HDB's official datasets on data.gov.sg (PC-independent).
+on:
+  schedule:
+    - cron: "23 2 3 * *"   # 3rd of each month, 10:23 SGT (HDB updates early in the month)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Download HDB data and rebuild market pages
+        run: python market/build_market.py
+      - name: Commit refresh
+        run: |
+          git config user.name "BitGitty"
+          git config user.email "148478921+BitGitty@users.noreply.github.com"
+          git add market sitemap.xml
+          git diff --cached --quiet || TZ=UTC git commit -m "market: monthly HDB data refresh"
+          TZ=UTC git push
