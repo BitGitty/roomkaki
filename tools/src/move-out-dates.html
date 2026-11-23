@@ -1,0 +1,38 @@
+<div class="panelbox">
+  <label class="fld" for="start">Tenancy start date</label>
+  <input id="start" type="date">
+  <label class="fld" for="minstay">Minimum stay in your agreement (months)</label>
+  <input id="minstay" type="number" min="0" value="6" inputmode="numeric">
+  <label class="fld" for="notice">Notice period (months)</label>
+  <input id="notice" type="number" min="0" value="1" inputmode="numeric">
+  <label class="fld" for="give">Date you give notice (in writing)</label>
+  <input id="give" type="date">
+  <label class="fld" for="refund">Days the landlord has to return the deposit (from your agreement; often 7–14)</label>
+  <input id="refund" type="number" min="0" value="14" inputmode="numeric">
+  <div class="result" id="out" hidden></div>
+  <p class="note">Singapore law does not set one notice period for rooms — your agreement does. HDB rentals must last at least
+  6 months. If a date falls on a weekend or public holiday, agree the handover day with your landlord.</p>
+</div>
+<script>
+const $id = (i) => document.getElementById(i);
+const addMonths = (d, m) => { const x = new Date(d); const day = x.getDate(); x.setMonth(x.getMonth() + m);
+  if (x.getDate() < day) x.setDate(0); return x; };            // clamp 31 Jan + 1 month -> 28/29 Feb
+const fmt = (d) => d.toLocaleDateString("en-SG", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+function calc() {
+  const s = $id("start").value, g = $id("give").value, out = $id("out");
+  if (!s || !g) { out.hidden = true; return; }
+  const start = new Date(s + "T00:00"), give = new Date(g + "T00:00");
+  const earliest = addMonths(start, +$id("minstay").value || 0);
+  let end = addMonths(give, +$id("notice").value || 0);
+  const lateNote = end < earliest;
+  if (lateNote) end = earliest;
+  end.setDate(end.getDate() - 1);                                // the last day you stay
+  const deposit = new Date(end); deposit.setDate(deposit.getDate() + (+$id("refund").value || 0));
+  out.hidden = false;
+  out.innerHTML = `<p>Last day of your stay</p><div class="big">${fmt(end)}</div>
+    <p style="margin-top:10px">Deposit due back by <b>${fmt(deposit)}</b></p>
+    ${lateNote ? `<p class="note">Your notice ends before the minimum stay, so the minimum stay sets your end date. Leaving earlier may cost an early-termination penalty — check your agreement.</p>` : ""}`;
+}
+["start", "minstay", "notice", "give", "refund"].forEach((i) => $id(i).addEventListener("input", calc));
+$id("give").valueAsDate = new Date();
+</script>

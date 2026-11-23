@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bill splitter · RoomKaki</title>
+<meta name="description" content="Split a PUB bill fairly by people, days stayed and aircon use.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/bill-split.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="Bill splitter · RoomKaki">
+<meta property="og:description" content="Split a PUB bill fairly by people, days stayed and aircon use.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>💡 Bill splitter</h1>
+<p class="lead">Split a PUB bill fairly by people, days stayed and aircon use.</p>
+<div class="panelbox">
+  <label class="fld" for="bill">Total bill for the month (S$)</label>
+  <input id="bill" type="number" min="0" step="0.01" placeholder="e.g. 240" inputmode="decimal">
+  <label class="fld" for="ac">Of that, aircon charged separately? (S$, optional — leave 0 to split everything)</label>
+  <input id="ac" type="number" min="0" step="0.01" value="0" inputmode="decimal">
+  <label class="fld" for="days">Days in this billing month</label>
+  <input id="days" type="number" min="1" max="31" value="30" inputmode="numeric">
+  <p class="fld">People (name · days stayed · aircon hours this month)</p>
+  <div id="people"></div>
+  <button class="ghost noprint" id="add" type="button">+ Add person</button>
+  <div class="result" id="out" hidden></div>
+  <p class="note">Shared part is split by days stayed; the aircon part (if any) by aircon hours. Agree the method with your
+  flatmates in writing first — this just does the maths.</p>
+</div>
+<script>
+const $id = (i) => document.getElementById(i);
+let n = 0;
+function addPerson(name) {
+  n++;
+  const d = document.createElement("div");
+  d.className = "row2"; d.style.gridTemplateColumns = "2fr 1fr 1fr"; d.style.marginBottom = "6px";
+  d.innerHTML = `<input class="pn" placeholder="Name" value="${name || "Person " + n}">
+    <input class="pd" type="number" min="0" max="31" placeholder="days" inputmode="numeric">
+    <input class="ph" type="number" min="0" placeholder="aircon h" inputmode="numeric">`;
+  $id("people").appendChild(d);
+  d.querySelectorAll("input").forEach((x) => x.addEventListener("input", calc));
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function calc() {
+  const bill = +$id("bill").value, ac = Math.min(+$id("ac").value || 0, bill), days = +$id("days").value || 30;
+  const rows = [...$id("people").children].map((r) => ({
+    name: r.querySelector(".pn").value || "?", d: r.querySelector(".pd").value === "" ? days : +r.querySelector(".pd").value,
+    h: +r.querySelector(".ph").value || 0 }));
+  const out = $id("out");
+  if (!(bill > 0) || !rows.length) { out.hidden = true; return; }
+  const shared = bill - ac, dTot = rows.reduce((s, r) => s + r.d, 0), hTot = rows.reduce((s, r) => s + r.h, 0);
+  if (dTot === 0) { out.hidden = true; return; }
+  const res = rows.map((r) => ({ ...r, pay: shared * r.d / dTot + (ac > 0 ? (hTot ? ac * r.h / hTot : ac / rows.length) : 0) }));
+  out.hidden = false;
+  out.innerHTML = `<table class="tt"><tr><th>Who</th><th>Days</th><th>Aircon h</th><th>Pays</th></tr>${res.map((r) =>
+    `<tr><td>${esc(r.name)}</td><td>${r.d}</td><td>${r.h}</td><td><b>S$${r.pay.toFixed(2)}</b></td></tr>`).join("")}</table>
+    <p class="note">Total S$${res.reduce((s, r) => s + r.pay, 0).toFixed(2)}${ac > 0 && !hTot ? " · no aircon hours given, aircon split equally" : ""}</p>`;
+}
+["bill", "ac", "days"].forEach((i) => $id(i).addEventListener("input", calc));
+$id("add").onclick = () => addPerson();
+addPerson("Me"); addPerson();
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>

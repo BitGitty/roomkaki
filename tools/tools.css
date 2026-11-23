@@ -1,0 +1,34 @@
+/* RoomKaki tools — layered on /styles.css */
+.tool{max-width:720px;margin:0 auto;padding:20px 16px 50px}
+.tool h1{font-size:1.5rem;line-height:1.25;margin:6px 0 6px}
+.tool .lead{color:var(--mut);margin:0 0 18px}
+.crumb a{color:var(--brand);font-weight:700;text-decoration:none;font-size:.9rem}
+.toolgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.toolcard{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;
+text-decoration:none;box-shadow:var(--shadow);transition:transform .12s ease}
+.toolcard:hover{transform:translateY(-3px)}
+.toolcard .ti{font-size:1.6rem;display:block;margin-bottom:6px}
+.toolcard b{display:block;margin-bottom:4px}
+.toolcard span:last-child{color:var(--mut);font-size:.88rem}
+.panelbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.fld{display:block;font-size:.85rem;font-weight:700;color:var(--mut);margin:12px 0 4px}
+.panelbox input,.panelbox select,.panelbox textarea{width:100%;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);
+border-radius:12px;padding:11px 13px;font:inherit;outline:none}
+.panelbox input:focus,.panelbox select:focus{border-color:var(--brand)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result{background:var(--bg);border:2px solid var(--brand);border-radius:16px;padding:16px;margin-top:16px}
+.result .big{font-size:1.6rem;font-weight:800;color:var(--brand)}
+.result.warn{border-color:#c0392b}.result.warn .big{color:#c0392b}
+.result.mid{border-color:var(--accent)}.result.mid .big{color:#b7791f}
+.note{font-size:.82rem;color:var(--mut);margin-top:10px}
+.q{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.q span{flex:1}
+.yn{display:flex;gap:6px;flex:0 0 auto}
+.yn button{border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:6px 14px;font-weight:700}
+.yn button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.yn button.on.no{background:#5b6b66;border-color:#5b6b66}
+table.tt{width:100%;border-collapse:collapse;font-size:.92rem}
+table.tt td,table.tt th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
+table.tt th{color:var(--mut);font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+.chipline{display:inline-block;color:#fff;border-radius:6px;padding:1px 7px;font-size:.78rem;font-weight:800;margin-right:4px}
+@media print{header,nav.tabs,footer,.noprint,.crumb{display:none}.tool{padding:0}.panelbox{box-shadow:none;border:0}}

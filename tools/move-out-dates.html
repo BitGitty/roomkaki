@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Move-out &amp; deposit dates · RoomKaki</title>
+<meta name="description" content="Your last day from the notice period, and when your deposit is due.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/move-out-dates.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="Move-out &amp; deposit dates · RoomKaki">
+<meta property="og:description" content="Your last day from the notice period, and when your deposit is due.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>📅 Move-out &amp; deposit dates</h1>
+<p class="lead">Your last day from the notice period, and when your deposit is due.</p>
+<div class="panelbox">
+  <label class="fld" for="start">Tenancy start date</label>
+  <input id="start" type="date">
+  <label class="fld" for="minstay">Minimum stay in your agreement (months)</label>
+  <input id="minstay" type="number" min="0" value="6" inputmode="numeric">
+  <label class="fld" for="notice">Notice period (months)</label>
+  <input id="notice" type="number" min="0" value="1" inputmode="numeric">
+  <label class="fld" for="give">Date you give notice (in writing)</label>
+  <input id="give" type="date">
+  <label class="fld" for="refund">Days the landlord has to return the deposit (from your agreement; often 7–14)</label>
+  <input id="refund" type="number" min="0" value="14" inputmode="numeric">
+  <div class="result" id="out" hidden></div>
+  <p class="note">Singapore law does not set one notice period for rooms — your agreement does. HDB rentals must last at least
+  6 months. If a date falls on a weekend or public holiday, agree the handover day with your landlord.</p>
+</div>
+<script>
+const $id = (i) => document.getElementById(i);
+const addMonths = (d, m) => { const x = new Date(d); const day = x.getDate(); x.setMonth(x.getMonth() + m);
+  if (x.getDate() < day) x.setDate(0); return x; };            // clamp 31 Jan + 1 month -> 28/29 Feb
+const fmt = (d) => d.toLocaleDateString("en-SG", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+function calc() {
+  const s = $id("start").value, g = $id("give").value, out = $id("out");
+  if (!s || !g) { out.hidden = true; return; }
+  const start = new Date(s + "T00:00"), give = new Date(g + "T00:00");
+  const earliest = addMonths(start, +$id("minstay").value || 0);
+  let end = addMonths(give, +$id("notice").value || 0);
+  const lateNote = end < earliest;
+  if (lateNote) end = earliest;
+  end.setDate(end.getDate() - 1);                                // the last day you stay
+  const deposit = new Date(end); deposit.setDate(deposit.getDate() + (+$id("refund").value || 0));
+  out.hidden = false;
+  out.innerHTML = `<p>Last day of your stay</p><div class="big">${fmt(end)}</div>
+    <p style="margin-top:10px">Deposit due back by <b>${fmt(deposit)}</b></p>
+    ${lateNote ? `<p class="note">Your notice ends before the minimum stay, so the minimum stay sets your end date. Leaving earlier may cost an early-termination penalty — check your agreement.</p>` : ""}`;
+}
+["start", "minstay", "notice", "give", "refund"].forEach((i) => $id(i).addEventListener("input", calc));
+$id("give").valueAsDate = new Date();
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>

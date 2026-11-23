@@ -49,7 +49,7 @@ padding:18px;margin:30px 0 0;text-align:center}}
   <div class="grow"></div>
   <a class="cta" href="../" style="text-decoration:none">Find a room</a>
 </header>
-<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/" class="on">📖 Guides</a></nav>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/" class="on">📖 Guides</a><a href="/tools/">🧰 Tools</a></nav>
 <article class="post">
 <h1>{title}</h1>
 <div class="date">{date} · RoomKaki guides</div>
@@ -93,7 +93,7 @@ padding:16px 18px;margin-bottom:12px;text-decoration:none;box-shadow:var(--shado
   <div class="grow"></div>
   <a class="cta" href="../" style="text-decoration:none">Find a room</a>
 </header>
-<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/" class="on">📖 Guides</a></nav>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/" class="on">📖 Guides</a><a href="/tools/">🧰 Tools</a></nav>
 <div class="bloglist">
 <h1>Renting guides</h1>
 <p style="color:var(--mut)">Plain-language guides for renting a room in Singapore. New guide every day.</p>

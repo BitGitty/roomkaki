@@ -1,0 +1,41 @@
+<div class="panelbox">
+  <label class="fld" for="budget">Your rent budget (S$ / month)</label>
+  <input id="budget" type="number" min="0" placeholder="e.g. 800" inputmode="numeric">
+  <label class="fld" for="type">Room type</label>
+  <select id="type"><option value="0.7">Bed-space (shared room)</option><option value="1" selected>Common room</option><option value="1.5">Master room</option></select>
+  <label class="fld" for="line">Your work's MRT line (optional)</label>
+  <select id="line"><option value="">Any line</option><option value="NS">North South</option><option value="EW">East West</option>
+    <option value="NE">North East</option><option value="CC">Circle</option><option value="DT">Downtown</option><option value="TE">Thomson–East Coast</option></select>
+  <div class="result" id="out" hidden></div>
+  <p class="note">Rough asking-rent guide for common rooms in HDB flats, November 2026, based on ranges seen on major listing
+  sites — real prices vary by flat, floor and season. Bed-space ≈ 0.7×, master room ≈ 1.5× a common room. Always compare with
+  current listings.</p>
+</div>
+<script>
+// [area, lines, common-room low, high]
+const AREAS = [
+  ["Sembawang", ["NS"], 580, 800], ["Woodlands", ["NS", "TE"], 600, 850], ["Yishun", ["NS"], 600, 850],
+  ["Choa Chu Kang", ["NS"], 600, 850], ["Boon Lay / Jurong West", ["EW"], 600, 850], ["Bukit Panjang", ["DT"], 650, 900],
+  ["Pasir Ris", ["EW"], 650, 900], ["Bukit Batok", ["NS"], 650, 900], ["Sengkang / Punggol", ["NE"], 650, 950],
+  ["Hougang", ["NE"], 650, 950], ["Ang Mo Kio", ["NS"], 700, 1000], ["Jurong East", ["EW", "NS"], 700, 1000],
+  ["Bedok", ["EW"], 700, 1000], ["Tampines", ["EW", "DT"], 700, 1000], ["Geylang / Aljunied", ["EW"], 700, 1050],
+  ["Toa Payoh", ["NS"], 750, 1050], ["Clementi", ["EW"], 750, 1100], ["Bishan", ["NS", "CC"], 800, 1150],
+  ["Queenstown", ["EW"], 850, 1200], ["Novena", ["NS"], 900, 1300],
+];
+const COL = { NS: "#d42e12", EW: "#009645", NE: "#9900aa", CC: "#fa9e0d", DT: "#005ec4", TE: "#9D5B25" };
+function calc() {
+  const b = +document.getElementById("budget").value, m = +document.getElementById("type").value, line = document.getElementById("line").value;
+  const out = document.getElementById("out");
+  if (!(b > 0)) { out.hidden = true; return; }
+  const rows = AREAS.filter(([, ls]) => !line || ls.includes(line))
+    .map(([a, ls, lo, hi]) => ({ a, ls, lo: Math.round(lo * m / 10) * 10, hi: Math.round(hi * m / 10) * 10 }))
+    .map((r) => ({ ...r, fit: b >= r.hi ? 2 : b >= r.lo ? 1 : 0 })).filter((r) => r.fit).sort((x, y) => y.fit - x.fit || x.lo - y.lo);
+  out.hidden = false;
+  out.className = "result" + (rows.length ? "" : " warn");
+  out.innerHTML = rows.length ? `<table class="tt"><tr><th>Area</th><th>Lines</th><th>Typical</th></tr>${rows.map((r) =>
+    `<tr><td>${r.a}${r.fit === 2 ? " ✅" : ""}</td><td>${r.ls.map((l) => `<span class="chipline" style="background:${COL[l]}">${l}</span>`).join("")}</td>
+     <td>S$${r.lo}–${r.hi}</td></tr>`).join("")}</table><p class="note">✅ = your budget covers the usual range. Others: you may find something at the lower end.</p>`
+    : `<div class="big">Nothing in range</div><p>Try a bed-space, a different line, or a slightly higher budget.</p>`;
+}
+["budget", "type", "line"].forEach((i) => document.getElementById(i).addEventListener("input", calc));
+</script>

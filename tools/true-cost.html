@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>True monthly cost · RoomKaki</title>
+<meta name="description" content="Rent + bills + transport + food. Compare up to 3 rooms honestly.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/true-cost.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="True monthly cost · RoomKaki">
+<meta property="og:description" content="Rent + bills + transport + food. Compare up to 3 rooms honestly.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>🧮 True monthly cost</h1>
+<p class="lead">Rent + bills + transport + food. Compare up to 3 rooms honestly.</p>
+<div class="panelbox">
+  <p class="note" style="margin-top:0">Fill in what you know for up to 3 rooms. Leave a box empty if it's included in the rent.</p>
+  <table class="tt" id="tbl">
+    <tr><th></th><th>Room A</th><th>Room B</th><th>Room C</th></tr>
+    <tr><td>Rent / month</td><td><input data-k="rent" data-c="0" type="number" inputmode="decimal"></td><td><input data-k="rent" data-c="1" type="number" inputmode="decimal"></td><td><input data-k="rent" data-c="2" type="number" inputmode="decimal"></td></tr>
+    <tr><td>Utilities / aircon</td><td><input data-k="bills" data-c="0" type="number"></td><td><input data-k="bills" data-c="1" type="number"></td><td><input data-k="bills" data-c="2" type="number"></td></tr>
+    <tr><td>Transport / month</td><td><input data-k="fare" data-c="0" type="number"></td><td><input data-k="fare" data-c="1" type="number"></td><td><input data-k="fare" data-c="2" type="number"></td></tr>
+    <tr><td>Can cook? (1 = yes, 0 = no)</td><td><input data-k="cook" data-c="0" type="number" min="0" max="1" value="1"></td><td><input data-k="cook" data-c="1" type="number" min="0" max="1" value="1"></td><td><input data-k="cook" data-c="2" type="number" min="0" max="1" value="1"></td></tr>
+    <tr><td>Commute (min one way)</td><td><input data-k="mins" data-c="0" type="number"></td><td><input data-k="mins" data-c="1" type="number"></td><td><input data-k="mins" data-c="2" type="number"></td></tr>
+  </table>
+  <div class="result" id="out" hidden></div>
+  <p class="note">"No cooking" adds about S$250 a month for eating out (rough guide). Travel time counts work days only
+  (22 a month, both ways). Use the Commute checker tool to estimate minutes.</p>
+</div>
+<script>
+const NOCOOK = 250, WORKDAYS = 22;
+function calc() {
+  const v = (k, c) => +(document.querySelector(`[data-k="${k}"][data-c="${c}"]`).value || 0);
+  const rooms = [0, 1, 2].filter((c) => v("rent", c) > 0).map((c) => ({
+    name: "Room " + "ABC"[c],
+    total: v("rent", c) + v("bills", c) + v("fare", c) + (document.querySelector(`[data-k="cook"][data-c="${c}"]`).value === "0" ? NOCOOK : 0),
+    hours: Math.round(v("mins", c) * 2 * WORKDAYS / 60) }));
+  const out = document.getElementById("out");
+  if (!rooms.length) { out.hidden = true; return; }
+  const best = Math.min(...rooms.map((r) => r.total));
+  out.hidden = false;
+  out.innerHTML = `<table class="tt"><tr><th>Room</th><th>Real cost / month</th><th>Travel hours / month</th></tr>${rooms.map((r) =>
+    `<tr><td>${r.name}${r.total === best && rooms.length > 1 ? " ✅" : ""}</td><td><b>S$${r.total.toLocaleString("en")}</b></td><td>${r.hours || "–"}</td></tr>`).join("")}</table>`;
+}
+document.getElementById("tbl").addEventListener("input", calc);
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>

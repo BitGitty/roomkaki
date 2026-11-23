@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Area finder · RoomKaki</title>
+<meta name="description" content="Your budget + work MRT line → areas worth looking at.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/area-finder.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="Area finder · RoomKaki">
+<meta property="og:description" content="Your budget + work MRT line → areas worth looking at.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>🗺️ Area finder</h1>
+<p class="lead">Your budget + work MRT line → areas worth looking at.</p>
+<div class="panelbox">
+  <label class="fld" for="budget">Your rent budget (S$ / month)</label>
+  <input id="budget" type="number" min="0" placeholder="e.g. 800" inputmode="numeric">
+  <label class="fld" for="type">Room type</label>
+  <select id="type"><option value="0.7">Bed-space (shared room)</option><option value="1" selected>Common room</option><option value="1.5">Master room</option></select>
+  <label class="fld" for="line">Your work's MRT line (optional)</label>
+  <select id="line"><option value="">Any line</option><option value="NS">North South</option><option value="EW">East West</option>
+    <option value="NE">North East</option><option value="CC">Circle</option><option value="DT">Downtown</option><option value="TE">Thomson–East Coast</option></select>
+  <div class="result" id="out" hidden></div>
+  <p class="note">Rough asking-rent guide for common rooms in HDB flats, November 2026, based on ranges seen on major listing
+  sites — real prices vary by flat, floor and season. Bed-space ≈ 0.7×, master room ≈ 1.5× a common room. Always compare with
+  current listings.</p>
+</div>
+<script>
+// [area, lines, common-room low, high]
+const AREAS = [
+  ["Sembawang", ["NS"], 580, 800], ["Woodlands", ["NS", "TE"], 600, 850], ["Yishun", ["NS"], 600, 850],
+  ["Choa Chu Kang", ["NS"], 600, 850], ["Boon Lay / Jurong West", ["EW"], 600, 850], ["Bukit Panjang", ["DT"], 650, 900],
+  ["Pasir Ris", ["EW"], 650, 900], ["Bukit Batok", ["NS"], 650, 900], ["Sengkang / Punggol", ["NE"], 650, 950],
+  ["Hougang", ["NE"], 650, 950], ["Ang Mo Kio", ["NS"], 700, 1000], ["Jurong East", ["EW", "NS"], 700, 1000],
+  ["Bedok", ["EW"], 700, 1000], ["Tampines", ["EW", "DT"], 700, 1000], ["Geylang / Aljunied", ["EW"], 700, 1050],
+  ["Toa Payoh", ["NS"], 750, 1050], ["Clementi", ["EW"], 750, 1100], ["Bishan", ["NS", "CC"], 800, 1150],
+  ["Queenstown", ["EW"], 850, 1200], ["Novena", ["NS"], 900, 1300],
+];
+const COL = { NS: "#d42e12", EW: "#009645", NE: "#9900aa", CC: "#fa9e0d", DT: "#005ec4", TE: "#9D5B25" };
+function calc() {
+  const b = +document.getElementById("budget").value, m = +document.getElementById("type").value, line = document.getElementById("line").value;
+  const out = document.getElementById("out");
+  if (!(b > 0)) { out.hidden = true; return; }
+  const rows = AREAS.filter(([, ls]) => !line || ls.includes(line))
+    .map(([a, ls, lo, hi]) => ({ a, ls, lo: Math.round(lo * m / 10) * 10, hi: Math.round(hi * m / 10) * 10 }))
+    .map((r) => ({ ...r, fit: b >= r.hi ? 2 : b >= r.lo ? 1 : 0 })).filter((r) => r.fit).sort((x, y) => y.fit - x.fit || x.lo - y.lo);
+  out.hidden = false;
+  out.className = "result" + (rows.length ? "" : " warn");
+  out.innerHTML = rows.length ? `<table class="tt"><tr><th>Area</th><th>Lines</th><th>Typical</th></tr>${rows.map((r) =>
+    `<tr><td>${r.a}${r.fit === 2 ? " ✅" : ""}</td><td>${r.ls.map((l) => `<span class="chipline" style="background:${COL[l]}">${l}</span>`).join("")}</td>
+     <td>S$${r.lo}–${r.hi}</td></tr>`).join("")}</table><p class="note">✅ = your budget covers the usual range. Others: you may find something at the lower end.</p>`
+    : `<div class="big">Nothing in range</div><p>Try a bed-space, a different line, or a slightly higher budget.</p>`;
+}
+["budget", "type", "line"].forEach((i) => document.getElementById(i).addEventListener("input", calc));
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>

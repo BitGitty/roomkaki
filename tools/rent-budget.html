@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rent budget · RoomKaki</title>
+<meta name="description" content="How much rent fits your salary, after sending money home.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/rent-budget.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="Rent budget · RoomKaki">
+<meta property="og:description" content="How much rent fits your salary, after sending money home.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>💰 Rent budget</h1>
+<p class="lead">How much rent fits your salary, after sending money home.</p>
+<div class="panelbox">
+  <label class="fld" for="pay">Monthly take-home pay (S$, after CPF if any)</label>
+  <input id="pay" type="number" min="0" placeholder="e.g. 2500" inputmode="decimal">
+  <label class="fld" for="home">Money you send home each month (S$)</label>
+  <input id="home" type="number" min="0" value="0" inputmode="decimal">
+  <label class="fld" for="other">Other fixed costs (phone, loans, insurance) (S$)</label>
+  <input id="other" type="number" min="0" value="0" inputmode="decimal">
+  <div class="result" id="out" hidden></div>
+  <p class="note">A common budgeting guide is to keep rent around 30% of take-home pay, never above 40%. These are guidelines,
+  not official rules. Food and transport estimates are rough averages for a room renter — adjust to your life.</p>
+</div>
+<script>
+const $id = (i) => document.getElementById(i);
+const FOOD = 450, TRANSPORT = 120, BILLS = 50;   // rough monthly living costs for a room renter (guide only)
+function calc() {
+  const pay = +$id("pay").value, out = $id("out");
+  if (!(pay > 0)) { out.hidden = true; return; }
+  const left = pay - (+$id("home").value || 0) - (+$id("other").value || 0);
+  const comfy = Math.min(pay * 0.3, left - FOOD - TRANSPORT - BILLS);
+  const max = Math.min(pay * 0.4, left - FOOD - TRANSPORT - BILLS);
+  out.hidden = false;
+  if (max <= 0) {
+    out.className = "result warn";
+    out.innerHTML = `<div class="big">Very tight</div><p>After sending money home and basic living costs (~S$${FOOD + TRANSPORT + BILLS}), little is left for rent. Consider a shared bed-space or lower remittance.</p>`;
+    return;
+  }
+  out.className = "result";
+  out.innerHTML = `<p>Comfortable rent</p><div class="big">up to S$${Math.max(0, Math.floor(comfy / 10) * 10)}</div>
+    <p>Stretch (not more than): <b>S$${Math.floor(max / 10) * 10}</b></p>
+    <p class="note">Assumes about S$${FOOD} food, S$${TRANSPORT} transport and S$${BILLS} bills a month. Check what each room really includes with our True monthly cost tool.</p>`;
+}
+["pay", "home", "other"].forEach((i) => $id(i).addEventListener("input", calc));
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<div class="panelbox" id="qs"></div>
+<div class="result" id="out" hidden></div>
+<p class="note">Based on the warning signs police and ScamShield publish for rental scams. Score is a guide — if anything feels
+wrong, don't pay. Report scams at police.gov.sg or call the ScamShield helpline 1799.</p>
+<script>
+const QS = [
+  ["They ask for a deposit or 'holding fee' before you have seen the room in person.", 3],
+  ["You cannot view the room (they are 'overseas' or 'busy'), or they refuse a live video call.", 3],
+  ["The price is much lower than similar rooms nearby (30% or more cheaper).", 2],
+  ["They push you to pay fast — 'many people want it', 'pay within 1 hour'.", 2],
+  ["They want payment to a personal account that is not the owner's name, or by gift card / crypto.", 3],
+  ["The 'agent' is not found in the CEA Public Register (cea.gov.sg).", 2],
+  ["The photos look like a hotel, or a Google Lens search finds them on other sites.", 2],
+  ["They refuse any written tenancy agreement.", 2],
+];
+const ans = {};
+document.getElementById("qs").innerHTML = QS.map(([q], i) =>
+  `<div class="q"><span>${q}</span><div class="yn"><button data-i="${i}" data-v="1">Yes</button><button data-i="${i}" data-v="0" class="no-btn">No</button></div></div>`).join("");
+document.getElementById("qs").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  ans[b.dataset.i] = +b.dataset.v;
+  b.parentNode.querySelectorAll("button").forEach((x) => x.classList.remove("on", "no"));
+  b.classList.add("on"); if (b.dataset.v === "0") b.classList.add("no");
+  score();
+});
+function score() {
+  const out = document.getElementById("out");
+  const answered = Object.keys(ans).length;
+  if (!answered) { out.hidden = true; return; }
+  const pts = QS.reduce((s, [, w], i) => s + (ans[i] ? w : 0), 0);
+  const hard = [0, 1, 4].some((i) => ans[i]);
+  const level = hard || pts >= 5 ? "warn" : pts >= 2 ? "mid" : "";
+  const label = level === "warn" ? "High risk — do not pay" : level === "mid" ? "Be careful — check more" : "No big warning signs so far";
+  out.hidden = false;
+  out.className = "result " + level;
+  out.innerHTML = `<div class="big">${label}</div><p>${answered} of ${QS.length} answered · warning points: ${pts}</p>
+    <p class="note">${level === "warn" ? "Any one of: paying before viewing, no viewing at all, or paying a stranger's account is enough to walk away." : "Always view in person and sign a simple agreement before paying."}</p>`;
+}
+</script>

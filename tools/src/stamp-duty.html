@@ -1,0 +1,33 @@
+<div class="panelbox">
+  <label class="fld" for="rent">Monthly rent (S$)</label>
+  <input id="rent" type="number" min="0" step="1" placeholder="e.g. 800" inputmode="decimal">
+  <label class="fld" for="months">Lease length (months)</label>
+  <input id="months" type="number" min="1" step="1" placeholder="e.g. 12" inputmode="numeric">
+  <div class="result" id="out" hidden></div>
+  <p class="note">Formula from IRAS (iras.gov.sg, "Renting a property"): for a lease of 4 years or less, stamp duty is
+  0.4% of the total rent for the whole lease, rounded down to the dollar, minimum S$1. No duty if the average yearly
+  rent is S$1,000 or less. Leases longer than 4 years use 0.4% of 4 years' average rent. Stamp the agreement within
+  14 days of signing (30 days if signed overseas) on iras.gov.sg. Checked November 2026.</p>
+</div>
+<script>
+function calc() {
+  const rent = +document.getElementById("rent").value, months = Math.floor(+document.getElementById("months").value);
+  const out = document.getElementById("out");
+  if (!(rent > 0) || !(months > 0)) { out.hidden = true; return; }
+  const total = rent * months;
+  const avgYear = months >= 12 ? total / (months / 12) : total;   // annualised only when the lease runs a year+
+  let duty, why;
+  if (avgYear <= 1000) { duty = 0; why = "Exempt — the average yearly rent is S$1,000 or less."; }
+  else {
+    const base = months <= 48 ? total : (total / months) * 12 * 4;
+    duty = Math.max(1, Math.floor(base * 0.004));
+    why = months <= 48 ? `0.4% × total rent S$${total.toLocaleString("en")}`
+                       : `0.4% × 4 years of average rent (lease longer than 4 years)`;
+  }
+  out.hidden = false;
+  out.innerHTML = `<div class="big">S$${duty.toLocaleString("en")}</div><div>${why}</div>
+    <p class="note">Usually paid by the tenant, but your agreement can say otherwise. Pay it online at iras.gov.sg (e-Stamping) within 14 days of signing.</p>`;
+}
+document.getElementById("rent").addEventListener("input", calc);
+document.getElementById("months").addEventListener("input", calc);
+</script>

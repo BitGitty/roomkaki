@@ -1,0 +1,31 @@
+<div class="panelbox">
+  <p class="note" style="margin-top:0">Fill in what you know for up to 3 rooms. Leave a box empty if it's included in the rent.</p>
+  <table class="tt" id="tbl">
+    <tr><th></th><th>Room A</th><th>Room B</th><th>Room C</th></tr>
+    <tr><td>Rent / month</td><td><input data-k="rent" data-c="0" type="number" inputmode="decimal"></td><td><input data-k="rent" data-c="1" type="number" inputmode="decimal"></td><td><input data-k="rent" data-c="2" type="number" inputmode="decimal"></td></tr>
+    <tr><td>Utilities / aircon</td><td><input data-k="bills" data-c="0" type="number"></td><td><input data-k="bills" data-c="1" type="number"></td><td><input data-k="bills" data-c="2" type="number"></td></tr>
+    <tr><td>Transport / month</td><td><input data-k="fare" data-c="0" type="number"></td><td><input data-k="fare" data-c="1" type="number"></td><td><input data-k="fare" data-c="2" type="number"></td></tr>
+    <tr><td>Can cook? (1 = yes, 0 = no)</td><td><input data-k="cook" data-c="0" type="number" min="0" max="1" value="1"></td><td><input data-k="cook" data-c="1" type="number" min="0" max="1" value="1"></td><td><input data-k="cook" data-c="2" type="number" min="0" max="1" value="1"></td></tr>
+    <tr><td>Commute (min one way)</td><td><input data-k="mins" data-c="0" type="number"></td><td><input data-k="mins" data-c="1" type="number"></td><td><input data-k="mins" data-c="2" type="number"></td></tr>
+  </table>
+  <div class="result" id="out" hidden></div>
+  <p class="note">"No cooking" adds about S$250 a month for eating out (rough guide). Travel time counts work days only
+  (22 a month, both ways). Use the Commute checker tool to estimate minutes.</p>
+</div>
+<script>
+const NOCOOK = 250, WORKDAYS = 22;
+function calc() {
+  const v = (k, c) => +(document.querySelector(`[data-k="${k}"][data-c="${c}"]`).value || 0);
+  const rooms = [0, 1, 2].filter((c) => v("rent", c) > 0).map((c) => ({
+    name: "Room " + "ABC"[c],
+    total: v("rent", c) + v("bills", c) + v("fare", c) + (document.querySelector(`[data-k="cook"][data-c="${c}"]`).value === "0" ? NOCOOK : 0),
+    hours: Math.round(v("mins", c) * 2 * WORKDAYS / 60) }));
+  const out = document.getElementById("out");
+  if (!rooms.length) { out.hidden = true; return; }
+  const best = Math.min(...rooms.map((r) => r.total));
+  out.hidden = false;
+  out.innerHTML = `<table class="tt"><tr><th>Room</th><th>Real cost / month</th><th>Travel hours / month</th></tr>${rooms.map((r) =>
+    `<tr><td>${r.name}${r.total === best && rooms.length > 1 ? " ✅" : ""}</td><td><b>S$${r.total.toLocaleString("en")}</b></td><td>${r.hours || "–"}</td></tr>`).join("")}</table>`;
+}
+document.getElementById("tbl").addEventListener("input", calc);
+</script>

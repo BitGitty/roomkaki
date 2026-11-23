@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simple tenancy agreement · RoomKaki</title>
+<meta name="description" content="Fill in the blanks, print a plain-English room rental agreement.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/tools/tools.css">
+<link rel="canonical" href="https://roomkaki.com/tools/tenancy-agreement.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏠</text></svg>">
+<meta property="og:title" content="Simple tenancy agreement · RoomKaki">
+<meta property="og:description" content="Fill in the blanks, print a plain-English room rental agreement.">
+<meta property="og:image" content="https://roomkaki.com/og.png">
+</head>
+<body>
+<header>
+  <a class="logo" href="/"><b>Room</b>Kaki<span>SINGAPORE</span></a>
+  <div class="grow"></div>
+  <a class="cta" href="/" style="text-decoration:none">Find a room</a>
+</header>
+<nav class="tabs" aria-label="Sections"><a href="/">🏠 Rooms</a><a href="/blog/">📖 Guides</a><a href="/tools/" class="on">🧰 Tools</a></nav>
+<main class="tool">
+<p class="crumb"><a href="/tools/">← All tools</a></p>
+<h1>📝 Simple tenancy agreement</h1>
+<p class="lead">Fill in the blanks, print a plain-English room rental agreement.</p>
+<div class="panelbox noprint">
+  <div class="row2"><div><label class="fld">Landlord name</label><input id="ll"></div><div><label class="fld">Tenant name</label><input id="tn"></div></div>
+  <div class="row2"><div><label class="fld">Landlord ID (last 4 chars)</label><input id="llid" maxlength="4"></div><div><label class="fld">Tenant ID (last 4 chars)</label><input id="tnid" maxlength="4"></div></div>
+  <label class="fld">Flat address</label><input id="addr" placeholder="Blk ..., #..-.., Singapore ......">
+  <div class="row2"><div><label class="fld">Room</label><input id="room" placeholder="Common room 2"></div><div><label class="fld">Start date</label><input id="start" type="date"></div></div>
+  <div class="row2"><div><label class="fld">Length (months)</label><input id="months" type="number" value="12"></div><div><label class="fld">Monthly rent (S$)</label><input id="rent" type="number"></div></div>
+  <div class="row2"><div><label class="fld">Deposit (S$)</label><input id="dep" type="number"></div><div><label class="fld">Rent due on day</label><input id="due" type="number" value="1" min="1" max="28"></div></div>
+  <div class="row2"><div><label class="fld">Notice period (months)</label><input id="notice" type="number" value="1"></div><div><label class="fld">Deposit returned within (days)</label><input id="ret" type="number" value="14"></div></div>
+  <label class="fld">Included in rent</label><input id="incl" value="Utilities (PUB), WiFi">
+  <label class="fld">House rules (optional)</label><textarea id="rules" rows="3" placeholder="No overnight guests. Light cooking only. Quiet after 10pm."></textarea>
+  <label class="fld">Stamp duty paid by</label><select id="sd"><option>the Tenant</option><option>the Landlord</option></select>
+  <button class="cta wide" id="make" type="button">Make the agreement</button>
+</div>
+<div class="panelbox" id="doc" hidden></div>
+<p class="note noprint">A simple template to put your agreement in writing — not legal advice. For HDB flats the owner must also
+register the tenant with HDB. Stamp the signed agreement on iras.gov.sg within 14 days (our Stamp duty tool shows the amount).</p>
+<script>
+const $id = (i) => document.getElementById(i);
+const esc = (s) => String(s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+$id("make").onclick = () => {
+  const f = {}; ["ll", "tn", "llid", "tnid", "addr", "room", "start", "months", "rent", "dep", "due", "notice", "ret", "incl", "rules", "sd"]
+    .forEach((k) => f[k] = esc($id(k).value.trim()));
+  const blank = (v) => v || "________";
+  const start = f.start ? new Date(f.start + "T00:00").toLocaleDateString("en-SG", { day: "numeric", month: "long", year: "numeric" }) : "________";
+  $id("doc").hidden = false;
+  $id("doc").innerHTML = `<h2 style="text-align:center">Room Tenancy Agreement</h2>
+    <p>This agreement is made between <b>${blank(f.ll)}</b> (ID ending ${blank(f.llid)}), the Landlord, and <b>${blank(f.tn)}</b>
+    (ID ending ${blank(f.tnid)}), the Tenant.</p>
+    <ol>
+      <li><b>Room:</b> ${blank(f.room)} at ${blank(f.addr)}.</li>
+      <li><b>Term:</b> ${blank(f.months)} months, starting ${start}.</li>
+      <li><b>Rent:</b> S$${blank(f.rent)} per month, paid on or before day ${blank(f.due)} of each month by bank transfer.</li>
+      <li><b>Deposit:</b> S$${blank(f.dep)}, returned within ${blank(f.ret)} days after the Tenant moves out, less only the cost of
+      damage beyond fair wear and tear, shown with photos.</li>
+      <li><b>Included in rent:</b> ${blank(f.incl)}.</li>
+      <li><b>Notice:</b> either side may end the tenancy with ${blank(f.notice)} month(s) written notice, but not before the minimum
+      stay required by law (6 months for HDB flats).</li>
+      <li><b>Condition:</b> both sides agree the room's condition from photos taken on the first day.</li>
+      <li><b>Entry:</b> the Landlord will give reasonable notice before entering the room, except in an emergency.</li>
+      ${f.rules ? `<li><b>House rules:</b> ${f.rules}</li>` : ""}
+      <li><b>Stamp duty:</b> paid by ${f.sd}, on iras.gov.sg within 14 days of signing.</li>
+    </ol>
+    <table class="tt" style="margin-top:28px"><tr><td>Landlord signature: ______________<br>Date: ________</td>
+    <td>Tenant signature: ______________<br>Date: ________</td></tr></table>
+    <button class="cta wide noprint" onclick="window.print()">Print / save as PDF</button>`;
+  $id("doc").scrollIntoView({ behavior: "smooth" });
+};
+</script>
+
+</main>
+<footer>
+  <p><b>RoomKaki</b> — free tools for renting a room in Singapore</p>
+  <p>Results are a guide, not legal or financial advice. Rules can change — check the official site named in each tool.</p>
+  <p><a href="/tools/">All tools</a> · <a href="/blog/">Guides</a> · <a href="/">Rooms</a></p>
+</footer>
+<script>/* first-party analytics */(function(){try{fetch("https://uumiwuvbxzmtxuwmutis.supabase.co/rest/v1/rpc/track_view",{method:"POST",headers:{"apikey":"sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Authorization":"Bearer sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b","Content-Type":"application/json"},body:JSON.stringify({p_site:"roomkaki",p_path:location.pathname+location.search,p_ref:document.referrer||null}),keepalive:true}).catch(function(){})}catch(e){}})();</script>
+</body>
+</html>

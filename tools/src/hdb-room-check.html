@@ -1,0 +1,48 @@
+<div class="panelbox">
+  <label class="fld" for="ft">What type of HDB flat is it?</label>
+  <select id="ft">
+    <option value="">Choose…</option>
+    <option value="1">1-room</option><option value="2">2-room</option>
+    <option value="3">3-room</option><option value="4">4-room</option>
+    <option value="5">5-room or Executive</option>
+  </select>
+  <label class="fld" for="mode">What is being rented?</label>
+  <select id="mode"><option value="room">A bedroom (owner lives in the flat)</option>
+    <option value="whole">The whole flat (owner does not live there)</option></select>
+  <label class="fld" for="people">How many people will live in the flat in total? (owners + family + all tenants)</label>
+  <input id="people" type="number" min="1" placeholder="e.g. 5" inputmode="numeric">
+  <label class="fld" for="stay">How long is your stay (months)?</label>
+  <input id="stay" type="number" min="1" placeholder="e.g. 12" inputmode="numeric">
+  <label class="fld" for="ends">When does the rental end?</label>
+  <select id="ends"><option value="by2028">On or before 31 Dec 2028</option><option value="after2028">After 31 Dec 2028</option></select>
+  <label class="fld" for="reg">Will the owner register you with HDB?</label>
+  <select id="reg"><option value="yes">Yes</option><option value="unsure">Not sure / haven't asked</option><option value="no">No / they refuse</option></select>
+  <div class="result" id="out" hidden></div>
+  <p class="note">Rules from hdb.gov.sg ("Regulations for renting out bedrooms / flat"), checked November 2026: only 3-room or bigger
+  flats may rent out bedrooms; the owner must keep living in the flat; minimum 6 months per tenant; maximum 6 people in a
+  3-room flat; maximum 8 people in a 4-room or bigger flat for rentals ending by 31 Dec 2028 (then 6). Whole-flat rental has
+  extra conditions (e.g. owner's minimum occupation period, non-citizen quota). This check is a guide — HDB decides.</p>
+</div>
+<script>
+const $id = (i) => document.getElementById(i);
+function check() {
+  const ft = +$id("ft").value, mode = $id("mode").value, people = +$id("people").value, stay = +$id("stay").value;
+  const out = $id("out");
+  if (!ft || !(people > 0) || !(stay > 0)) { out.hidden = true; return; }
+  const probs = [], warns = [];
+  if (mode === "room" && ft < 3) probs.push("1-room and 2-room flats are not allowed to rent out bedrooms.");
+  const cap = ft >= 4 ? ($id("ends").value === "by2028" ? 8 : 6) : 6;
+  if (people > cap) probs.push(`Too many people: the limit for this flat is ${cap} in total, including the owners.`);
+  if (stay < 6) probs.push("HDB rentals must be at least 6 months. Shorter stays are not allowed.");
+  if ($id("reg").value === "no") probs.push("The owner must register every tenant with HDB. Refusing is a red flag.");
+  if ($id("reg").value === "unsure") warns.push("Ask the owner to register your stay with HDB before you pay.");
+  if (mode === "whole") warns.push("Whole-flat rental has extra rules (owner's minimum occupation period, non-citizen quota). Check hdb.gov.sg.");
+  out.hidden = false;
+  out.className = "result" + (probs.length ? " warn" : warns.length ? " mid" : "");
+  out.innerHTML = probs.length
+    ? `<div class="big">Not allowed</div><ul>${probs.map((p) => `<li>${p}</li>`).join("")}</ul>${warns.map((w) => `<p class="note">${w}</p>`).join("")}`
+    : `<div class="big">${warns.length ? "Looks OK — one thing to check" : "Looks allowed"}</div>
+       <p>Flat limit ${cap} people · minimum stay 6 months · you plan ${stay} months.</p>${warns.map((w) => `<p class="note">${w}</p>`).join("")}`;
+}
+["ft", "mode", "people", "stay", "ends", "reg"].forEach((i) => $id(i).addEventListener("input", check));
+</script>
