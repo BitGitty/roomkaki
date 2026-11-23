@@ -68,6 +68,13 @@ const pub = ["index.html", "llms.txt"].map((f) => fs.readFileSync(path.join(root
 assert(!/every poster is verified|verified posters?\b(?! only)|all posters (are )?verified/i.test(pub),
        "No 'verified posters' claim in index.html / llms.txt");
 
+// Security headers (review 2026-11-23): CSP present, every external script/style pinned with an integrity hash
+const idx = fs.readFileSync(path.join(root, "index.html"), "utf8");
+assert(/http-equiv="Content-Security-Policy"/.test(idx) && /object-src 'none'/.test(idx), "CSP meta present in index.html");
+const ext = idx.match(/<(script|link)[^>]+(src|href)="https:\/\/[^"]+\.(js|css)[^"]*"[^>]*>/g) || [];
+assert(ext.length > 0 && ext.every((t) => /integrity="sha384-/.test(t)), "All external JS/CSS pinned with integrity hashes");
+assert(!/supabase-js@2"/.test(idx), "supabase-js pinned to an exact version");
+
 // C6: phone sanitization pattern exists in reveal flow
 assert(/replace\(\/\[\^0-9\+ \]\/g/.test(app), "C6 phone sanitized before tel/wa render");
 
