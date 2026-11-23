@@ -1,0 +1,27 @@
+name: telegram
+# Room alerts + @roomkaki channel posts, every 30 minutes, PC-independent.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: telegram
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Bot inbox, alerts, channel
+        env:
+          ROOMKAKI_BOT_TOKEN: ${{ secrets.ROOMKAKI_BOT_TOKEN }}
+          ALERTS_JOB_SECRET: ${{ secrets.ALERTS_JOB_SECRET }}
+          ROOMKAKI_CHANNEL: "@roomkaki"
+        run: python backend/telegram_job.py

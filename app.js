@@ -160,6 +160,7 @@ function render() {
     : `<div style="grid-column:1/-1;text-align:center;color:var(--mut);padding:40px">
         <p style="margin:0 0 12px">No rooms match${state.q ? ` “${escId(state.q)}”` : ""} — try fewer words or wider filters.</p>
         ${state.q ? `<button class="ghost" onclick="clearSearch()">Clear search</button>` : ""}
+        <button class="ghost" onclick="openAlert()">🔔 Alert me when one is posted</button>
         <button class="cta" onclick="openPost(null,'wanted')">Post what you're looking for</button></div>`);
   if (state.view === "map") renderMap(list);
 }
@@ -177,6 +178,33 @@ function renderMap(list) {
       .bindPopup(`<b>${money(r.price)}</b> · ${escId(r.type)}<br>${escId(r.station)} ${+r.walk || 0}min<br>
         <a href="#" onclick="openSheet(${r.id});return false">View room →</a>`));
   if (pts.length) map.fitBounds(pts.map((r) => [r.lat, r.lng]), { padding: [40, 40], maxZoom: 14 });
+}
+
+// ---------- room alerts on Telegram ----------
+const BOT = "RoomKakiBot";
+function openAlert() {
+  const W = state.kind === "wanted";
+  const cap = MARKET.ui.price_max || 3000;
+  openModal(`<h2>🔔 Get room alerts</h2>
+    <p class="mut">We'll message you on Telegram when a matching ${W ? "room-wanted post" : "room"} is posted. Free, stop any time.</p>
+    <label>Area, MRT or keywords (optional)<input id="al_q" maxlength="80" value="${escId(state.q)}" placeholder="e.g. Woodlands common"></label>
+    <label>${W ? "Budget at least" : "Max rent"} (${escId(MARKET.ui.symbol)}/month, optional)
+      <input id="al_p" type="number" min="1" value="${state.maxPrice < cap ? state.maxPrice : ""}" placeholder="e.g. 800"></label>
+    <button class="cta wide" id="al_btn" onclick="makeAlert()">Create alert</button>
+    <div id="al_out" class="mut"></div>`);
+}
+async function makeAlert() {
+  const btn = $("#al_btn");
+  if (btn.disabled) return;
+  btn.disabled = true;
+  $("#al_out").textContent = "Creating…";
+  const res = await createAlert(MARKET.id, state.kind, $("#al_q").value.trim(), +$("#al_p").value || null);
+  if (res.error) { $("#al_out").textContent = "Couldn't create: " + res.error; btn.disabled = false; return; }
+  track("/ev/alert/create");
+  $("#al_out").innerHTML = `<p style="margin:12px 0 6px">Last step — open Telegram and tap <b>Start</b>:</p>
+    <a class="cta wide" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener"
+       href="https://t.me/${BOT}?start=${encodeURIComponent(res.token)}">Open Telegram ↗</a>
+    <p class="note">The link works for your alert only. You can pause alerts any time by sending /stop to the bot.</p>`;
 }
 
 function clearSearch() { state.q = ""; $("#q").value = ""; render(); }

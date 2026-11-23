@@ -84,7 +84,7 @@
 </div>
 
 <div class="viewbar">
-  <span class="count" id="count"></span>
+  <span class="count"><span id="count"></span> · <a href="#" onclick="openAlert();return false" class="alertlink">🔔 Get alerts</a></span>
   <div class="toggle">
     <button data-v="grid" class="on" data-i18n="cards" onclick="setView('grid')">Cards</button>
     <button data-v="map" data-i18n="mapBtn" onclick="setView('map')">Map</button>
@@ -111,6 +111,7 @@
 <footer>
   <p id="footNote"><b>RoomKaki</b> — early preview, growing with the community</p>
   <p data-i18n="safetyFoot">Safety first: never transfer money before viewing · HDB minimum-stay rules shown on every listing</p>
+  <p><a class="feedback-link" href="https://t.me/roomkaki" target="_blank" rel="noopener">📢 Join our Telegram channel — new rooms daily</a></p>
   <p><a class="feedback-link" href="/blog/">📖 Renting guides — scams, HDB rules, deposits</a></p>
   <p><a class="feedback-link" href="#" onclick="openFeedback();return false">💬 Suggest a feature or report a problem</a></p>
 </footer>
