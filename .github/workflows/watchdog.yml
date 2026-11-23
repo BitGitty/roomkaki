@@ -1,0 +1,27 @@
+name: watchdog
+# PC-independent health check (pattern: rightsatlas watchdog). Messages the owner on Telegram only when
+# something is wrong: site/db down, blog stopped or queue low, posts waiting for approval 12h+,
+# Telegram job stalled, market data stale.
+on:
+  schedule:
+    - cron: "17 */6 * * *"    # every 6 hours
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python backend/watchdog.py --check
+      - run: python backend/watchdog.py
+        env:
+          ROOMKAKI_BOT_TOKEN: ${{ secrets.ROOMKAKI_BOT_TOKEN }}
+          OWNER_CHAT_ID: ${{ secrets.OWNER_CHAT_ID }}
+          ALERTS_JOB_SECRET: ${{ secrets.ALERTS_JOB_SECRET }}
+          GITHUB_TOKEN: ${{ github.token }}
