@@ -163,6 +163,20 @@ whole flat; indicative) and "Resale flat prices". Medians of the last 12 months;
 """
 
 
+def note_panel():
+    """Monthly market note: key figures QUOTED from a published report, credited + linked (never scraped).
+    Update market/notes/latest.json each month after reading the new report."""
+    f = ROOT / "notes" / "latest.json"
+    if not f.exists():
+        return ""
+    n = json.loads(f.read_text(encoding="utf-8"))
+    pts = "".join(f"<li>{html.escape(p)}</li>" for p in n["points"])
+    return (f"<div class='panelbox'><p class='fld' style='margin-top:0'>📰 Market note — {html.escape(n['month'])}</p>"
+            f"<ul>{pts}</ul><p class='note'>{html.escape(n['room_note'])}</p>"
+            f"<p class='note'>Figures quoted from <a href='{html.escape(n['source_url'])}' rel='noopener' target='_blank'>"
+            f"{html.escape(n['source_name'])}</a> (checked {html.escape(n['checked'])}).</p></div>")
+
+
 def private_panel():
     """Condo (non-landed) rent index by region: latest quarter, change vs 4 quarters earlier, 12-quarter trend."""
     f = RAW / f"{PRIVATE_ID}.csv"
@@ -262,7 +276,7 @@ def render(d):
             f"per bedroom {money(n4['room_est'])}*</p></div><p class='fld'>4-room median rent, last 24 months</p>"
             f"{spark(n4['rent_series'], d['rent_months'])}</div>"
             f"<div class='panelbox'><p class='fld' style='margin-top:0'>All flat types, Singapore-wide</p>{table(nat)}</div>"
-            + private_panel() +
+            + note_panel() + private_panel() +
             f"<div class='panelbox'><p class='fld' style='margin-top:0'>4-room rent by town (cheapest first) — tap a town</p>"
             f"<div style='overflow-x:auto'><table class='tt'><tr><th>Town</th><th>Median rent</th><th>Change</th><th>Per bedroom*</th></tr>"
             f"{town_list}</table></div></div>" + FOOT)
