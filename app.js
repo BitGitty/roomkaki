@@ -5,6 +5,17 @@ const DEMO = new URLSearchParams(location.search).has("demo");
 let rooms = (DEMO && typeof LISTINGS !== "undefined") ? LISTINGS.slice() : [];
 
 const $ = (s) => document.querySelector(s);
+
+// ---------- market (country) config — only active markets are offered; SG is the default ----------
+let MARKET = { id: "sg", name: "Singapore", active: true, ui: {
+  symbol: "S$", center: [1.3521, 103.8198], zoom: 11, transit_word: "MRT",
+  property_types: [["true", "HDB"], ["false", "Condo"]],
+  stay_note_true: "HDB rules: minimum {n}-month stay applies.", stay_note_false: "Condo listing — minimum {n} months.",
+  min_stay_true: 6, min_stay_false: 3, price_max: 3000, price_step: 50 } };
+let MARKETS = [MARKET];
+let PREVIEW = false;
+const money = (n) => `${MARKET.ui.symbol}${(+n || 0).toLocaleString("en")}`;
+const hasTransit = () => typeof LINES !== "undefined" && Object.keys(LINES).length > 0;
 const norm = (s) => String(s || "").normalize("NFC").toLowerCase();  // Burmese must match via NFC
 
 // ---------- i18n (EN / Burmese) ----------
@@ -46,7 +57,8 @@ function toggleLang() {
 }
 
 function lineDot(l) {
-  return `<span class="dot" style="background:${LINES[l].color}">${l}</span>`;
+  if (!hasTransit() || !LINES[l]) return "";
+  return `<span class="dot" style="background:${LINES[l].color}">${escId(l)}</span>`;
 }
 
 function phBg(r) {
@@ -62,7 +74,7 @@ function filtered() {
     (state.line === "All" || r.line === state.line) &&
     (state.gender === "All" || r.gender === state.gender || r.gender === "Any") &&
     (!state.ownerOnly || r.owner) &&
-    (state.maxPrice >= 3000 || r.price <= state.maxPrice) &&
+    (state.maxPrice >= (MARKET.ui.price_max || 3000) || r.price <= state.maxPrice) &&
     (state.q === "" || norm(`${r.title} ${r.my || ""} ${r.area} ${r.station} ${r.desc || ""}`).includes(norm(state.q)))
   );
 }
@@ -72,7 +84,7 @@ function wantedCard(r) {
     onclick="openSheet(${r.id})" onkeydown="if(event.key==='Enter')openSheet(${r.id})">
     <div class="body">
       <div><span class="badge want">Looking for a room</span> <span class="tag">${escId(r.type)}</span></div>
-      <div class="price" style="margin-top:8px">Budget S$${+r.price || 0}<small>/month</small></div>
+      <div class="price" style="margin-top:8px">Budget ${money(r.price)}<small>/month</small></div>
       <h3>${escId(r.title)}</h3>
       <div class="mrt">Prefers: ${escId(r.area)}${r.station ? ` · near ${escId(r.station)} MRT` : ""}</div>
       <div class="tags">
@@ -94,7 +106,7 @@ function card(r) {
       <span class="badge">${escId(r.type)}</span>
     </div>
     <div class="body">
-      <div class="price">S$${+r.price || 0}<small>/month</small></div>
+      <div class="price">${money(r.price)}<small>/month</small></div>
       <h3>${escId(r.title)}</h3>
       <div class="mrt">${lineDot(r.line)} ${escId(r.station)} · ${+r.walk || 0} min walk</div>
       <div class="tags">
@@ -137,7 +149,7 @@ function render() {
 
 function renderMap(list) {
   if (!map) {
-    map = L.map("map").setView([1.3521, 103.8198], 11);
+    map = L.map("map").setView(MARKET.ui.center || [1.3521, 103.8198], MARKET.ui.zoom || 11);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       { attribution: "© OpenStreetMap" }).addTo(map);
   }
@@ -145,7 +157,7 @@ function renderMap(list) {
   const pts = list.filter((r) => r.lat != null && r.lng != null);
   markers = pts.map((r) =>
     L.marker([r.lat, r.lng]).addTo(map)
-      .bindPopup(`<b>S$${+r.price || 0}</b> · ${escId(r.type)}<br>${escId(r.station)} ${+r.walk || 0}min<br>
+      .bindPopup(`<b>${money(r.price)}</b> · ${escId(r.type)}<br>${escId(r.station)} ${+r.walk || 0}min<br>
         <a href="#" onclick="openSheet(${r.id});return false">View room →</a>`));
   if (pts.length) map.fitBounds(pts.map((r) => [r.lat, r.lng]), { padding: [40, 40], maxZoom: 14 });
 }
@@ -177,7 +189,7 @@ function openSheet(id) {
       <button class="close" onclick="closeSheet()" aria-label="Close">✕</button>
       <div class="inner" style="padding-top:56px">
         <span class="badge want">Looking for a room</span>
-        <div class="price" style="margin-top:10px">Budget S$${+r.price || 0}<small>/month</small></div>
+        <div class="price" style="margin-top:10px">Budget ${money(r.price)}<small>/month</small></div>
         <h2>${escId(r.title)}</h2>
         <div class="safety">🛡️ <b>Landlords:</b> never ask for money before the person has viewed your room.</div>
         <p>${escId(r.desc)}</p>
@@ -203,12 +215,12 @@ function openSheet(id) {
       ? `<div class="photostrip">${r.photos.slice(1).map((u) => `<img src="${u}" loading="lazy" alt="room photo">`).join("")}</div>`
       : ""}
     <div class="inner">
-      <div class="price">S$${+r.price || 0}<small>/month</small></div>
+      <div class="price">${money(r.price)}<small>/month</small></div>
       <h2>${escId(r.title)}</h2>
       <div class="my">${escId(r.my)}</div>
-      <div class="mrt">${lineDot(r.line)} ${LINES[r.line].name} line · ${escId(r.station)} · ${+r.walk || 0} min walk</div>
+      <div class="mrt">${hasTransit() && LINES[r.line] ? `${lineDot(r.line)} ${escId(LINES[r.line].name)} line · ` : ""}${escId(r.station)}${r.walk ? ` · ${+r.walk} min walk` : ""}</div>
       <div class="safety">🛡️ <b>Stay safe:</b> never transfer a deposit before viewing the room in person.
-        ${r.hdb ? `HDB rules: minimum ${r.minStay}-month stay applies.` : `Condo listing — minimum ${r.minStay} months.`}</div>
+        ${(MARKET.ui[r.hdb ? "stay_note_true" : "stay_note_false"] || "").replace("{n}", r.minStay)}</div>
       <p>${escId(r.desc)}</p>
       <div class="facts">
         <div><b>Room type</b>${escId(r.type)}</div>
@@ -328,9 +340,12 @@ async function openPost(existing, kind) {
   const ed = (existing && existing.id) ? existing : null;
   const k = ed ? (ed.listing_kind || "offer") : (kind || "offer");
   const W = k === "wanted";
-  const lineOpts = `<option value="EW">East West</option><option value="NS">North South</option>
-        <option value="NE">North East</option><option value="CC">Circle</option>
-        <option value="DT">Downtown</option><option value="TE">Thomson-East Coast</option>`;
+  if (PREVIEW) { alert(`${MARKET.name} is not open on RoomKaki yet — preview only.`); return; }
+  const T = hasTransit();
+  const tw = MARKET.ui.transit_word || "transport";
+  const sym = MARKET.ui.symbol;
+  const lineOpts = T ? Object.entries(LINES).map(([c, v]) => `<option value="${escId(c)}">${escId(v.name)}</option>`).join("") : "";
+  const propOpts = (MARKET.ui.property_types || []).map(([v, l]) => `<option value="${escId(v)}">${escId(l)}</option>`).join("");
   const typeOpts = `<option value="common">Common room</option><option value="single">Single room</option>
         <option value="master">Master room</option><option value="studio">Studio</option>
         <option value="whole_unit">Whole unit</option>`;
@@ -342,15 +357,15 @@ async function openPost(existing, kind) {
     <input id="f_kind" type="hidden" value="${k}">
     <div class="form2">
       <label>${W ? "Room you want" : "Room type"}<select id="f_type">${typeOpts}</select></label>
-      <label>${W ? "Budget S$/month" : "Rent S$/month"}<input id="f_price" type="number" min="100" max="6000" placeholder="${W ? "700" : "850"}"></label>
-      <label>${W ? "Preferred MRT line" : "MRT line"}<select id="f_line">${lineOpts}</select></label>
-      <label>${W ? "Near which MRT" : "Nearest MRT"}<input id="f_station" placeholder="Boon Lay"></label>
-      ${W ? "" : `<label>Walk (min)<input id="f_walk" type="number" min="1" max="30" placeholder="6"></label>`}
+      <label>${W ? `Budget ${sym}/month` : `Rent ${sym}/month`}<input id="f_price" type="number" min="1" placeholder="${W ? "700" : "850"}"></label>
+      ${T ? `<label>${W ? `Preferred ${tw} line` : `${tw} line`}<select id="f_line">${lineOpts}</select></label>
+      <label>${W ? `Near which ${tw}` : `Nearest ${tw}`}<input id="f_station" placeholder="Boon Lay"></label>
+      ${W ? "" : `<label>Walk (min)<input id="f_walk" type="number" min="1" max="30" placeholder="6"></label>`}` : ""}
       <label>${W ? "Preferred area" : "Area"}<input id="f_area" placeholder="Jurong West"></label>
       <label>${W ? "Who is moving in" : "Preference"}<select id="f_gender">
         <option value="any">${W ? "Prefer not to say" : "Anyone"}</option><option value="female">${W ? "Female" : "Female only"}</option>
         <option value="male">${W ? "Male" : "Male only"}</option></select></label>
-      ${W ? "" : `<label>Property<select id="f_hdb"><option value="true">HDB</option><option value="false">Condo</option></select></label>`}
+      ${W || !propOpts ? "" : `<label>Property<select id="f_hdb">${propOpts}</select></label>`}
     </div>
     <label class="full">Title<input id="f_title" maxlength="80" placeholder="${W ? "Working lady looking for common room near Jurong East" : "Bright common room, 6 min to Boon Lay MRT"}"></label>
     <label class="full">Description<textarea id="f_desc" rows="3" placeholder="${W ? "When you need it, how long you'll stay, your job, any needs…" : "Furnished, aircon, cooking allowed, available now…"}"></textarea></label>
@@ -441,7 +456,7 @@ async function openMyRooms() {
     window._myRooms[r.id] = r;
     return `<div class="myroom">
       <div class="mr-main"><b>${escId(r.title)}</b><br>
-        <span class="mut">S$${r.price_month}/mo · ${escId(r.station || r.area || "")}</span>
+        <span class="mut">${money(r.price_month)}/mo ·${escId(r.station || r.area || "")}</span>
         <span class="st st-${r.status}">${STATUS_LABEL[r.status] || r.status}</span></div>
       <div class="myacts">
         <button class="ghost sm" onclick="editListing(${r.id})">Edit</button>
@@ -479,7 +494,7 @@ async function submitPost(editId) {
   const f = {
     room_type: $("#f_type").value, price_month: +g("f_price"), title: g("f_title"),
     description: g("f_desc") || g("f_title"), area: g("f_area") || g("f_station") || "Singapore",
-    transit_line: $("#f_line").value,
+    transit_line: g("f_line") || null,
     station: g("f_station"), walk_minutes: +g("f_walk") || 0, gender_pref: $("#f_gender").value,
     is_hdb: W ? true : g("f_hdb") === "true", listed_by_owner: ck("f_owner"), cooking_ok: ck("f_cook"),
     aircon: ck("f_air"), couple_ok: ck("f_couple"), contact_phone: g("f_phone"),
@@ -498,6 +513,58 @@ async function submitPost(editId) {
     <p class="mut">Thanks! We review ${editId ? "edited" : "new"} listings before they go live —
     usually the same day. You'll see it in the feed once it's approved.</p>
     <button class="cta wide" onclick="closeModal()">Done</button>`;
+}
+
+// ---------- markets: load config, pick one, apply to the page ----------
+async function initMarket() {
+  const list = await fetchMarkets();
+  if (!list || !list.length) return;
+  MARKETS = list;
+  const q = new URLSearchParams(location.search);
+  let saved = null;
+  try { saved = localStorage.getItem("rk_market"); } catch (e) {}
+  const pick = list.find((m) => m.id === q.get("market") && (m.active || q.has("preview")))
+    || list.find((m) => m.id === saved && m.active)
+    || list.find((m) => m.id === "sg") || list.find((m) => m.active);
+  if (!pick) return;
+  MARKET = pick;
+  PREVIEW = !pick.active;
+  LINES = (pick.transit_lines && Object.keys(pick.transit_lines).length) ? pick.transit_lines : {};
+  applyMarketUI();
+}
+
+function applyMarketUI() {
+  const lf = $("#lineFilter");
+  if (lf) {
+    lf.innerHTML = `<option value="All">All ${escId(MARKET.ui.transit_word || "")} lines</option>` +
+      Object.entries(LINES).map(([c, v]) => `<option value="${escId(c)}">${escId(v.name)}</option>`).join("");
+    lf.hidden = !hasTransit();
+  }
+  const pr = $("#price");
+  if (pr) {
+    pr.max = MARKET.ui.price_max || 3000; pr.step = MARKET.ui.price_step || 50;
+    pr.min = 0; pr.value = pr.max; state.maxPrice = +pr.max;
+    $("#priceLabel").textContent = "Any price";
+  }
+  const open = MARKETS.filter((m) => m.active);
+  const box = $("#marketBox");
+  if (box) {
+    box.hidden = open.length < 2 && !PREVIEW;
+    box.innerHTML = `<select class="chip" id="marketSel" aria-label="Country">` +
+      MARKETS.filter((m) => m.active || m.id === MARKET.id).map((m) =>
+        `<option value="${escId(m.id)}" ${m.id === MARKET.id ? "selected" : ""}>${escId(m.name)}${m.active ? "" : " (preview)"}</option>`).join("") +
+      `</select>`;
+    $("#marketSel").onchange = (e) => {
+      try { localStorage.setItem("rk_market", e.target.value); } catch (err) {}
+      location.href = `/?market=${encodeURIComponent(e.target.value)}`;
+    };
+  }
+  if (PREVIEW) {
+    const b = document.createElement("div");
+    b.className = "previewbar";
+    b.textContent = `Preview: ${MARKET.name} is not open on RoomKaki yet. Posting is switched off.`;
+    document.body.prepend(b);
+  }
 }
 
 // ---------- homepage guides strip ----------
@@ -537,7 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#q").addEventListener("input", (e) => { state.q = e.target.value; render(); });
   $("#price").addEventListener("input", (e) => {
     state.maxPrice = +e.target.value;
-    $("#priceLabel").textContent = state.maxPrice >= 3000 ? "Any price" : `≤ S$${e.target.value}`;
+    $("#priceLabel").textContent = state.maxPrice >= (MARKET.ui.price_max || 3000) ? "Any price" : `≤ ${money(e.target.value)}`;
     render();
   });
   document.addEventListener("keydown", (e) => {
@@ -555,6 +622,6 @@ document.addEventListener("DOMContentLoaded", () => {
   applyLang();
   render();
   refreshAuth();
-  loadLive();
+  initMarket().then(loadLive, loadLive);
   loadGuides();
 });

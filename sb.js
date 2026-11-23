@@ -23,15 +23,23 @@ function mapRow(r) {
     line: r.transit_line || "EW", station: r.station || "", walk: r.walk_minutes || 0,
     area: r.area, gender: GENDER[r.gender_pref] || "Any", owner: !!r.listed_by_owner,
     verified: false, cooking: !!r.cooking_ok, aircon: !!r.aircon, couple: !!r.couple_ok,
-    wifi: r.wifi !== false, hdb: r.is_hdb !== false, minStay: r.is_hdb === false ? 3 : 6,
+    wifi: r.wifi !== false, hdb: r.is_hdb !== false,
+    minStay: (typeof MARKET !== "undefined" && MARKET.ui[r.is_hdb === false ? "min_stay_false" : "min_stay_true"]) ?? (r.is_hdb === false ? 3 : 6),
     lat: r.lat, lng: r.lng, days: daysAgo(r.created_at), grad: GRADS[r.id % GRADS.length],
     src: r.source_url || null, kind: r.listing_kind || "offer", _real: true,
   };
 }
 
+async function fetchMarkets() {
+  const { data, error } = await sb.from("public_markets").select("*");
+  if (error) { console.warn("markets:", error.message); return null; }
+  return data;
+}
+
 async function fetchLiveListings() {
+  const mk = (typeof MARKET !== "undefined" && MARKET.id) || "sg";
   const { data, error } = await sb.from("public_listings")
-    .select("*").order("created_at", { ascending: false });
+    .select("*").eq("market_id", mk).order("created_at", { ascending: false });
   if (error) { console.warn("listings:", error.message); return null; }
   const rows = data.map(mapRow);
   const ids = rows.map((r) => r.id);
@@ -109,6 +117,7 @@ async function postListing(f) {
     gender_pref: f.gender_pref, is_hdb: f.is_hdb, listed_by_owner: f.listed_by_owner,
     cooking_ok: f.cooking_ok, aircon: f.aircon, couple_ok: f.couple_ok,
     contact_phone: f.contact_phone, listing_kind: f.listing_kind || "offer",
+    market_id: (typeof MARKET !== "undefined" && MARKET.id) || "sg",
   }).select("id").single();
   if (error) return { error: error.message };
   return { id: data.id };

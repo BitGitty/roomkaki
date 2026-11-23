@@ -52,6 +52,7 @@
 </section>
 
 <div class="kindbar">
+  <span id="marketBox" hidden></span>
   <div class="toggle">
     <button data-kind="offer" class="on" onclick="setKind('offer')">🏠 Rooms for rent</button>
     <button data-kind="wanted" onclick="setKind('wanted')">🙋 Looking for a room</button>
@@ -64,7 +65,7 @@
     <option value="All">All room types</option>
     <option>Common room</option><option>Single room</option><option>Master room</option>
   </select>
-  <select class="chip" data-filter="line">
+  <select class="chip" data-filter="line" id="lineFilter">
     <option value="All">All MRT lines</option>
     <option value="EW">East West</option><option value="NS">North South</option>
     <option value="NE">North East</option><option value="CC">Circle</option>

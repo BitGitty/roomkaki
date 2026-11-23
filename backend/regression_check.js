@@ -43,6 +43,18 @@ const wout = card(globalThis.rooms[1]);
 assert(wout.includes("Looking for a room") && !wout.includes("<b>hostile"), "Wanted card renders + escapes");
 state.kind = "offer";
 
+// Multi-country readiness (2026-11-23): Singapore default unchanged; other markets render safely
+assert(money(850) === "S$850", "SG default price format unchanged");
+const sgMarket = MARKET;
+MARKET = { id: "th", name: "Thailand", active: false, ui: { symbol: "฿", price_max: 30000, stay_note_true: "", stay_note_false: "" } };
+LINES = {};
+assert(money(12000) === "฿12,000", "Other market uses its own currency");
+assert(lineDot("EW") === "", "No transit dot when market has no matching line");
+assert(!card({ ...hostile, title: "thai room title ok", price: 12000 }).includes("undefined"), "Card renders without SG data");
+MARKET = sgMarket; LINES = { EW: { name: "East West", color: "#009645" } };
+assert(/enforce_active_market/.test(require("fs").readFileSync(require("path").join(__dirname, "multi_market.sql"), "utf8")),
+       "DB refuses posts into switched-off markets");
+
 // C6: phone sanitization pattern exists in reveal flow
 assert(/replace\(\/\[\^0-9\+ \]\/g/.test(app), "C6 phone sanitized before tel/wa render");
 

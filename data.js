@@ -1,5 +1,5 @@
 // Seed listings — realistic demo data for design review (not real rooms)
-const LINES = {
+var LINES = {
   EW: { name: "East West", color: "#009645" },
   NS: { name: "North South", color: "#d42e12" },
   NE: { name: "North East", color: "#9900aa" },
