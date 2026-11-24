@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://roomkaki.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://roomkaki.com/blog/</loc></url>
-  <url><loc>https://roomkaki.com/blog/room-prices-singapore-2026.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/spot-fake-room-photos.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/tenant-rights-basics-singapore.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/deposit-and-viewing-checklist.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/hdb-room-rental-rules.html</loc></url>
-  <url><loc>https://roomkaki.com/blog/rental-scams-singapore-checklist.html</loc></url>
   <url><loc>https://roomkaki.com/tools/</loc></url>
   <url><loc>https://roomkaki.com/tools/fair-rent.html</loc></url>
   <url><loc>https://roomkaki.com/tools/commute.html</loc></url>
@@ -49,4 +42,12 @@
   <url><loc>https://roomkaki.com/market/toa-payoh.html</loc></url>
   <url><loc>https://roomkaki.com/market/woodlands.html</loc></url>
   <url><loc>https://roomkaki.com/market/yishun.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/</loc></url>
+  <url><loc>https://roomkaki.com/blog/questions-before-renting.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/room-prices-singapore-2026.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/spot-fake-room-photos.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/tenant-rights-basics-singapore.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/deposit-and-viewing-checklist.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/hdb-room-rental-rules.html</loc></url>
+  <url><loc>https://roomkaki.com/blog/rental-scams-singapore-checklist.html</loc></url>
 </urlset>
