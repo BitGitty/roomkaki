@@ -26,7 +26,8 @@ def connect():
             last = e
     raise SystemExit(f"backup: could not connect ({type(last).__name__})")
 TABLES = ["listings", "listing_photos", "profiles", "reports", "favorites", "contact_reveals",
-          "room_alerts", "markets", "job_state", "site_suggestions"]
+          "room_alerts", "markets", "job_state", "site_suggestions",
+          "subscribers", "studio_keys"]  # 11-25: RightsAtlas shares this database; its email list is in here too
 
 
 def enc(o):
@@ -44,7 +45,7 @@ def main():
     with conn, conn.cursor() as cur:
         for t in TABLES:
             try:
-                cur.execute(f"select * from {t}" + (" where site = 'roomkaki'" if t == "site_suggestions" else ""))
+                cur.execute(f"select * from {t}")  # all sites (RoomKaki + RightsAtlas)
                 cols = [d[0] for d in cur.description]
                 dump[t] = [dict(zip(cols, r)) for r in cur.fetchall()]
                 counts[t] = len(dump[t])
