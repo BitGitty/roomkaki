@@ -1,8 +1,9 @@
 name: telegram
-# Room alerts + @roomkaki channel posts, every 30 minutes, PC-independent.
+# BACKUP runner for room alerts + @roomkaki channel. Primary = the PC task RoomKakiTelegramJob (every 15 min),
+# because GitHub ran the old */30 schedule only ~every 10 h on this small repo (watchdog caught it 2026-11-24).
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "11 * * * *"
   workflow_dispatch:
 
 permissions:

@@ -67,17 +67,13 @@ def gather() -> dict:
             f["pending"], f["pending_hours"] = h["pending"], (float(h["oldest_pending_hours"]) if h["oldest_pending_hours"] else None)
         except Exception:                                            # noqa: BLE001
             f["db_ok"] = False
-    tok = os.environ.get("GITHUB_TOKEN")
-    if tok:
+    # Telegram job heartbeat (written by the job itself — PC task every 15 min, GitHub hourly as backup)
+    if sec:
         try:
-            _, b = get(f"https://api.github.com/repos/{REPO}/actions/workflows/telegram.yml/runs?status=success&per_page=1",
-                       {"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json"})
-            runs = json.loads(b).get("workflow_runs", [])
-            if runs:
-                t = datetime.fromisoformat(runs[0]["updated_at"].replace("Z", "+00:00"))
-                f["tg_age_h"] = (datetime.now(timezone.utc) - t).total_seconds() / 3600
-            else:
-                f["tg_age_h"] = 999
+            _, b = get(f"{SB}/rest/v1/rpc/job_get_state", {"apikey": ANON, "Authorization": f"Bearer {ANON}"},
+                       {"p_secret": sec, "p_key": "telegram_last_run"})
+            last = json.loads(b)
+            f["tg_age_h"] = ((datetime.now(timezone.utc) - datetime.fromisoformat(last)).total_seconds() / 3600) if last else 999
         except Exception:                                            # noqa: BLE001
             pass
     try:

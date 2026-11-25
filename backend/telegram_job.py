@@ -11,6 +11,13 @@ import sys
 import urllib.request
 from pathlib import Path
 
+_ENV = Path(__file__).resolve().parent / ".env.local"          # PC run: secrets from the gitignored env file
+if "ROOMKAKI_BOT_TOKEN" not in os.environ and _ENV.exists():
+    for _l in _ENV.read_text(encoding="utf-8").splitlines():
+        if "=" in _l and not _l.startswith("#"):
+            _k, _v = _l.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 SB = "https://uumiwuvbxzmtxuwmutis.supabase.co"
 ANON = "sb_publishable_E2ECaIgR-2fLWAEeDfVnMA_5_balO9b"
 SITE = "https://roomkaki.com"
@@ -121,3 +128,6 @@ if __name__ == "__main__":
     inbox()
     alerts()
     channel()
+    if not DRY:   # heartbeat for the watchdog, whichever machine ran the job (PC every 15 min, GitHub as backup)
+        from datetime import datetime, timezone
+        rpc("job_set_state", p_key="telegram_last_run", p_value=datetime.now(timezone.utc).isoformat(timespec="seconds"))
