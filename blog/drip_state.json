@@ -1,5 +1,5 @@
 {
- "last_release": "2026-11-25",
+ "last_release": "2026-11-26",
  "log": [
   {
    "date": "2026-11-18",
@@ -32,6 +32,10 @@
   {
    "date": "2026-11-25",
    "post": "008-moving-in-checklist"
+  },
+  {
+   "date": "2026-11-26",
+   "post": "009-sharing-a-flat-etiquette"
   }
  ]
 }
