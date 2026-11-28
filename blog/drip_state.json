@@ -1,5 +1,5 @@
 {
- "last_release": "2026-11-27",
+ "last_release": "2026-11-28",
  "log": [
   {
    "date": "2026-11-18",
@@ -40,6 +40,10 @@
   {
    "date": "2026-11-27",
    "post": "010-choosing-location-near-work"
+  },
+  {
+   "date": "2026-11-28",
+   "post": "011-what-landlords-look-for"
   }
  ]
 }
